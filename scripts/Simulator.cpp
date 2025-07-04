@@ -69,7 +69,7 @@ void Simulator::run_input_vector_based(const std::vector<double>& upitch,
     if (uzp_filled.size() < max_size) uzp_filled.resize(max_size, 0.0);
     if (uyaw_filled.size() < max_size) uyaw_filled.resize(max_size, 0.0);
 	rtY_vector.clear();
-	rtY_vector.push_back(rtObj.getExternalOutputs());
+	//rtY_vector.push_back(rtObj.getExternalOutputs());
     // Executar a simulação
     for (size_t i = 0; i < max_size; ++i) {
         rtObj.setupitch(upitch_filled[i]);

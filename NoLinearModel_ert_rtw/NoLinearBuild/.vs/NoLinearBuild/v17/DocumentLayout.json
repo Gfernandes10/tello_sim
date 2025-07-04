@@ -38,8 +38,7 @@
               "RelativeToolTip": "..\\..\\scripts\\Simulator.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-06-26T00:10:11.354Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-26T00:10:11.354Z"
             },
             {
               "$type": "Document",
@@ -49,7 +48,7 @@
               "RelativeDocumentMoniker": "..\\..\\scripts\\Simulator.cpp",
               "ToolTip": "C:\\Users\\Gabriel Fernandes\\Desktop\\Tello\\scripts\\Simulator.cpp",
               "RelativeToolTip": "..\\..\\scripts\\Simulator.cpp",
-              "ViewState": "AgIAAGAAAAAAAAAAAADgv4wAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAADgv0cAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-06-26T00:09:58.238Z",
               "EditorCaption": ""
@@ -64,8 +63,7 @@
               "RelativeToolTip": "..\\NoLinearModel.h",
               "ViewState": "AgIAAK8AAAAAAAAAAAAAABkAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-06-25T23:48:30.872Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-25T23:48:30.872Z"
             },
             {
               "$type": "Document",
@@ -77,8 +75,7 @@
               "RelativeToolTip": "..\\ert_main.cpp",
               "ViewState": "AgIAACEAAAAAAAAAAAAAAGEAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-06-22T01:41:58.53Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-22T01:41:58.53Z"
             }
           ]
         }
