@@ -1,0 +1,38 @@
+﻿#pragma once  
+#include <stdio.h>              // This example main program uses printf/fflush  
+#include <chrono>
+#include <thread>
+#include "../NoLinearModel_ert_rtw/NoLinearModel.h"    
+
+class Simulator  
+{  
+    // Parameters 
+public:
+    NoLinearModel rtObj;
+	bool is_real_time; // Flag to indicate if the simulation is real-time
+	double base_rate; // Base rate in seconds for real-time simulation
+	int simulation_time; // Total simulation time in seconds
+private:
+	int step_count; // Number of steps to run in non-real-time mode
+
+    // Methods
+public:
+	Simulator(void);
+
+	void initialize(void);
+
+    void rt_OneStep(void);
+
+	void run();
+
+    void run_real_time(void);
+
+	void run_non_real_time(void);
+
+	void run_input_vector_based(const std::vector<double>& upitch,
+                                const std::vector<double>& uroll = {},
+                                const std::vector<double>& uzp = {},
+                                const std::vector<double>& uyaw = {});
+
+};
+

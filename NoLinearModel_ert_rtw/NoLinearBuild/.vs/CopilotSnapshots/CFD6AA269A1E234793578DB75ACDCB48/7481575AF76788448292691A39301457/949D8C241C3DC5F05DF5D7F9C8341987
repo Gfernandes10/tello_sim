@@ -1,0 +1,94 @@
+﻿#include "Simulator.h"
+
+Simulator::Simulator(void)
+{
+	is_real_time = false;
+	base_rate = 0.01; // Default base rate in seconds (100 Hz)
+	simulation_time = 10; // Default total simulation time in seconds
+}
+
+void Simulator::initialize(void)
+{
+	// Initialize the model
+	rtObj.initialize();
+	// Set default values for static members
+	step_count = simulation_time / base_rate; // Default number of steps for non-real-time simulation
+
+    printf("Simulator started with following parameters: base_rate = %f, simulation_time = %d, step_count = %d\n", base_rate, simulation_time, step_count);
+
+}
+void Simulator::run()
+{
+	if (is_real_time) {
+		run_real_time();
+	} else {
+		run_non_real_time();
+	}
+	printf("Simulation completed.\n");
+	fflush(stdout);
+}
+void Simulator::run_real_time(void)
+{
+	for (int i_step_count = 0; i_step_count <= step_count; ++i_step_count) {
+		// Call the step function
+		rt_OneStep();
+		double sim_time = i_step_count * base_rate;
+		printf("Simulation time %f s, dx_mps = %f , x_m = %f \n", sim_time, rtObj.rtY.dx_mps, rtObj.rtY.x_m);
+		std::this_thread::sleep_for(std::chrono::milliseconds(int(base_rate * 1000)));
+	}
+}
+
+void Simulator::run_non_real_time(void)
+{
+	for (int i_step_count = 0; i_step_count <= step_count; ++i_step_count) {
+		// Call the step function
+		rt_OneStep();
+		printf("Simulation step %d/%d , dx_mps = %f , x_m = %f \n",i_step_count, step_count, rtObj.rtY.dx_mps, rtObj.rtY.x_m);
+	}
+}
+void Simulator::run_input_vector_based(const std::vector<double> &input_vector)
+{
+	if (input_vector.size() != 4) {
+		printf("Error: Input vector must have exactly 4 elements.\n");
+		return;
+	}
+	// Set the inputs
+	rtObj.setupitch(input_vector[0]);
+	rtObj.seturoll(input_vector[1]);
+	rtObj.setuzp(input_vector[2]);
+	rtObj.setuyaw(input_vector[3]);
+	// Run the simulation
+	run(input_vector[0], input_vector[1], input_vector[2], input_vector[3]);
+}
+
+void Simulator::rt_OneStep(void)
+{
+	static boolean_T OverrunFlag{ false };
+
+	// Disable interrupts here
+
+	// Check for overrun
+	if (OverrunFlag) {
+		return;
+	}
+
+	OverrunFlag = true;
+
+	// Save FPU context here (if necessary)
+	// Re-enable timer or interrupt here
+	// Set model inputs here
+
+	// Step the model
+	rtObj.step();
+
+	// Get model outputs here
+
+	// Indicate task complete
+	OverrunFlag = false;
+
+	// Disable interrupts here
+	// Restore FPU context here (if necessary)
+	// Enable interrupts here
+}
+
+

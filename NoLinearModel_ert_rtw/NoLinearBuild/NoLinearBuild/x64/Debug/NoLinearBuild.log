@@ -1,0 +1,5 @@
+﻿  Simulator.cpp
+C:\Users\Gabriel Fernandes\Desktop\Tello\scripts\Simulator.cpp(17,31): warning C4244: '=': conversão de 'double' para 'int', possível perda de dados
+  NoLinearBuild.vcxproj -> C:\Users\Gabriel Fernandes\Desktop\Tello\NoLinearModel_ert_rtw\NoLinearBuild\x64\Debug\NoLinearBuild.exe
+  'pwsh.exe' não é reconhecido como um comando interno
+  ou externo, um programa operável ou um arquivo em lotes.

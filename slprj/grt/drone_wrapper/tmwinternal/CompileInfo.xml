@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MF0 version="1.1" packageUris="http://schema.mathworks.com/mf0/ci/19700101 http://schema.mathworks.com/mf0/sl_modelref_info/R2025a http://schema.mathworks.com/mf0/slexec_mm_sto/R2025a_202404151030 http://schema.mathworks.com/mf0/sltp_mm/R2025a_202406271200">
+  <ModelRefInfoRepo.ModelRefInfoRoot type="ModelRefInfoRepo.ModelRefInfoRoot" uuid="728e3bb1-76e7-4d9d-9d98-88cdf26a578a">
+    <busObjectsChecksum type="ModelRefInfoRepo.BusObjectInfo" uuid="c237cfb1-bb28-4bef-b264-715b220f6e30">
+      <Checksum>1462633313</Checksum>
+      <Checksum>3693537854</Checksum>
+      <Checksum>1837844244</Checksum>
+      <Checksum>1166708189</Checksum>
+      <Name>BusGroundTruth</Name>
+    </busObjectsChecksum>
+    <childModelRefInfo type="ModelRefInfoRepo.ChildModelRefInfo" uuid="545308bd-a919-4d04-8aed-cf42bf402fbf">
+      <hasAccelReference>true</hasAccelReference>
+      <modelName>NumLinearModel</modelName>
+      <modelPath>drone_wrapper:NumLinearModel</modelPath>
+    </childModelRefInfo>
+    <childModelRefInfo type="ModelRefInfoRepo.ChildModelRefInfo" uuid="947bce19-1455-445d-a9a3-75f8f5cd06a5">
+      <modelName>drone_wrapper</modelName>
+      <modelPath>drone_wrapper</modelPath>
+    </childModelRefInfo>
+    <compDerivCacheNeedsReset>false</compDerivCacheNeedsReset>
+    <compZcCacheNeedsReset>false</compZcCacheNeedsReset>
+    <compiledTFinal>10.0</compiledTFinal>
+    <dataSourceInfo type="ModelRefInfoRepo.DataSourceInfo" uuid="3846cb41-fe61-4337-b1c7-73d8461577d1">
+      <dataSources type="ModelRefInfoRepo.SourceInfo" uuid="52b4f065-1a92-4afc-b917-70d4c17a48d5">
+        <includeAllSections>true</includeAllSections>
+        <sourceName>base workspace</sourceName>
+        <type>BaseWorkspace</type>
+      </dataSources>
+      <modelName>NumLinearModel</modelName>
+    </dataSourceInfo>
+    <dataSourceInfo type="ModelRefInfoRepo.DataSourceInfo" uuid="518a070e-db4b-4253-96de-174c83072327">
+      <dataSources type="ModelRefInfoRepo.SourceInfo" uuid="a758711a-d7a2-474c-a026-81bf2ee6b403">
+        <includeAllSections>true</includeAllSections>
+        <sourceName>base workspace</sourceName>
+        <type>BaseWorkspace</type>
+      </dataSources>
+      <modelName>drone_wrapper</modelName>
+    </dataSourceInfo>
+    <dataTransferInfos>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAAAgAAAAAAAAAFAAAACAAAAAAAAAABAAAAAQAAAAAAAAAFAAQAAQAAAAEAAAAAAAAA</dataTransferInfos>
+    <fastestNoncontSigFeedingDerivPorts>-1.0</fastestNoncontSigFeedingDerivPorts>
+    <fundamentalSampleTimePeriod>.01</fundamentalSampleTimePeriod>
+    <globalVariables>BusAcceleration</globalVariables>
+    <globalVariables>BusGroundTruth</globalVariables>
+    <globalVariables>BusPose</globalVariables>
+    <globalVariables>BusVelocity</globalVariables>
+    <hasBlockWithPeriodicDiscreteSampleTime>true</hasBlockWithPeriodicDiscreteSampleTime>
+    <hasBwsAccessed>true</hasBwsAccessed>
+    <hasInlineVariantBlock>true</hasInlineVariantBlock>
+    <isBdInSimModeForSimCodegenVariants>false</isBdInSimModeForSimCodegenVariants>
+    <isOrigOutportVirtualBus>false</isOrigOutportVirtualBus>
+    <loggingSaveFormat>6</loggingSaveFormat>
+    <maxFreqHz>-1.0</maxFreqHz>
+    <needsAbsoluteTime>true</needsAbsoluteTime>
+    <numDStateRecs>16</numDStateRecs>
+    <numDataInputPorts>0</numDataInputPorts>
+    <numLoggableDStateRecs>16</numLoggableDStateRecs>
+    <numLoggableJacobianDStates>16</numLoggableJacobianDStates>
+    <numSigs>1</numSigs>
+    <origOutportBusOutputAsStruct>false</origOutportBusOutputAsStruct>
+    <origOutportBusType>BusGroundTruth</origOutportBusType>
+    <outports type="ModelRefInfoRepo.OutportInformation" uuid="271cebec-3f5d-4183-b3dd-1853b7598846">
+      <designMax>inf</designMax>
+      <designMin>-inf</designMin>
+      <indexType>2</indexType>
+      <rateInfos type="ModelRefInfoRepo.RateInfo">
+        <compiled>true</compiled>
+        <nonFcnCallPartitionName>D1</nonFcnCallPartitionName>
+        <period>.01</period>
+        <priority>40</priority>
+        <rateIdx>0</rateIdx>
+      </rateInfos>
+      <resolvedSignalObject></resolvedSignalObject>
+      <trueHiers>0</trueHiers>
+      <executionInterface type="ModelRefInfoRepo.OutputExecutionInterface" uuid="02e52334-be27-4397-bbc6-9f0b1dc4d903"/>
+      <sigNameToEMVCEMap type="ModelRefInfoRepo.SigNameEMVCEInfo" uuid="c05ed43e-6021-4b88-a2c5-f5e4781bb7cc"/>
+    </outports>
+    <runtimeNonFcnCallRateInfos type="ModelRefInfoRepo.RateInfo">
+      <compiled>true</compiled>
+      <nonFcnCallPartitionName>D1</nonFcnCallPartitionName>
+      <period>.01</period>
+      <priority>40</priority>
+      <rateIdx>0</rateIdx>
+    </runtimeNonFcnCallRateInfos>
+    <runtimeNonFcnCallRateInfos type="ModelRefInfoRepo.RateInfo">
+      <compiled>true</compiled>
+      <nonFcnCallPartitionName>D1</nonFcnCallPartitionName>
+      <period>.1</period>
+      <priority>40</priority>
+      <rateIdx>1</rateIdx>
+    </runtimeNonFcnCallRateInfos>
+    <sampleTimeInheritanceRule>2</sampleTimeInheritanceRule>
+    <solverStatusFlags>335</solverStatusFlags>
+    <timingAndTaskingRegistry>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;slexec_sto version=&quot;1.1&quot; packageUris=&quot;http://schema.mathworks.com/mf0/slexec_mm_sto/R2025a_202404151030&quot;&gt;
+  &lt;sto.Registry type=&quot;sto.Registry&quot; uuid=&quot;57e4a35e-913d-48fa-987d-39c0a5966a2d&quot;&gt;
+    &lt;executionSpec&gt;Undetermined&lt;/executionSpec&gt;
+    &lt;identifier&gt;drone_wrapper&lt;/identifier&gt;
+    &lt;clockRegistry type=&quot;sto.ClockRegistry&quot; uuid=&quot;3c21fd47-e04d-4358-bb8c-952549990633&quot;&gt;
+      &lt;clocks type=&quot;sto.Timer&quot; uuid=&quot;8378535f-6b80-4103-a257-cc8fc2c77f0c&quot;&gt;
+        &lt;computedFundamentalDiscretePeriod&gt;.01&lt;/computedFundamentalDiscretePeriod&gt;
+        &lt;fastestDiscreteRate type=&quot;sto.ClassicPeriodicDiscreteRate&quot; uuid=&quot;3453727d-5018-44eb-bdf9-91035f290f60&quot;/&gt;
+        &lt;isDefaultTimer&gt;true&lt;/isDefaultTimer&gt;
+        &lt;resolution&gt;.01&lt;/resolution&gt;
+        &lt;timeAdvanceMode&gt;FixedStep&lt;/timeAdvanceMode&gt;
+        &lt;identifier&gt;drone_wrapper::defaultTimer&lt;/identifier&gt;
+        &lt;rates type=&quot;sto.ClassicPeriodicDiscreteRate&quot; uuid=&quot;3453727d-5018-44eb-bdf9-91035f290f60&quot;&gt;
+          &lt;annotation&gt;D1&lt;/annotation&gt;
+          &lt;clockId&gt;drone_wrapper::defaultTimer&lt;/clockId&gt;
+          &lt;description&gt;Discrete 1&lt;/description&gt;
+          &lt;taskId&gt;_task0&lt;/taskId&gt;
+          &lt;rateSpec type=&quot;sto.RateSpec&quot; uuid=&quot;30171132-bc90-46db-b1cf-2c16424ab65d&quot;&gt;
+            &lt;period&gt;.01&lt;/period&gt;
+            &lt;rateType&gt;ClassicPeriodicDiscrete&lt;/rateType&gt;
+          &lt;/rateSpec&gt;
+        &lt;/rates&gt;
+        &lt;rates type=&quot;sto.ClassicPeriodicDiscreteRate&quot; uuid=&quot;086c60ca-8696-4831-9845-372d5a32a6b0&quot;&gt;
+          &lt;annotation&gt;D2&lt;/annotation&gt;
+          &lt;clockId&gt;drone_wrapper::defaultTimer&lt;/clockId&gt;
+          &lt;colorIndex&gt;1&lt;/colorIndex&gt;
+          &lt;description&gt;Discrete 2&lt;/description&gt;
+          &lt;rateIdx&gt;1&lt;/rateIdx&gt;
+          &lt;taskId&gt;_task0&lt;/taskId&gt;
+          &lt;rateSpec type=&quot;sto.RateSpec&quot; uuid=&quot;3ab46fed-f735-4445-bc3f-7b9f4bf0232c&quot;&gt;
+            &lt;period&gt;.1&lt;/period&gt;
+            &lt;rateType&gt;ClassicPeriodicDiscrete&lt;/rateType&gt;
+          &lt;/rateSpec&gt;
+        &lt;/rates&gt;
+        &lt;baseRate type=&quot;sto.ClassicPeriodicDiscreteRate&quot; uuid=&quot;78208759-4a85-44e6-a533-d2e1f15405ea&quot;&gt;
+          &lt;annotation&gt;D1&lt;/annotation&gt;
+          &lt;clockId&gt;drone_wrapper::defaultTimer&lt;/clockId&gt;
+          &lt;description&gt;Discrete 1&lt;/description&gt;
+          &lt;taskId&gt;_task0&lt;/taskId&gt;
+          &lt;rateSpec type=&quot;sto.RateSpec&quot; uuid=&quot;283cee84-f65a-4a4f-bf9d-98b13d7cb0db&quot;&gt;
+            &lt;period&gt;.01&lt;/period&gt;
+            &lt;rateType&gt;ClassicPeriodicDiscrete&lt;/rateType&gt;
+          &lt;/rateSpec&gt;
+        &lt;/baseRate&gt;
+      &lt;/clocks&gt;
+      &lt;clocks type=&quot;sto.Event&quot; uuid=&quot;c73cdd8f-6fc7-4c38-93b4-45eb0a73aded&quot;&gt;
+        &lt;eventType&gt;PARAMETER_CHANGE_EVENT&lt;/eventType&gt;
+        &lt;cNum&gt;1&lt;/cNum&gt;
+        &lt;clockType&gt;Event&lt;/clockType&gt;
+        &lt;identifier&gt;ParameterChangeEvent&lt;/identifier&gt;
+        &lt;rates type=&quot;sto.ModelWideEventRate&quot; uuid=&quot;3786ae42-e90b-47ac-8edf-ae73b76670a9&quot;&gt;
+          &lt;annotation&gt;Inf&lt;/annotation&gt;
+          &lt;clockId&gt;ParameterChangeEvent&lt;/clockId&gt;
+          &lt;colorIndex&gt;-1&lt;/colorIndex&gt;
+          &lt;description&gt;Constant&lt;/description&gt;
+          &lt;rateIdx&gt;-1&lt;/rateIdx&gt;
+          &lt;taskId&gt;ModelWideParameterChangeEvent&lt;/taskId&gt;
+          &lt;useForExecution&gt;NotForExecution&lt;/useForExecution&gt;
+          &lt;rateSpec type=&quot;sto.RateSpec&quot; uuid=&quot;63ff52e1-78a2-4e19-be0b-29fa6e370719&quot;&gt;
+            &lt;period&gt;inf&lt;/period&gt;
+            &lt;rateType&gt;ModelWideParameterChangeEvent&lt;/rateType&gt;
+          &lt;/rateSpec&gt;
+        &lt;/rates&gt;
+      &lt;/clocks&gt;
+      &lt;timeAdvanceMode&gt;FixedStep&lt;/timeAdvanceMode&gt;
+    &lt;/clockRegistry&gt;
+    &lt;taskRegistry type=&quot;sto.TaskRegistry&quot; uuid=&quot;09bea128-b7a2-4411-bda1-45d652c5e35b&quot;&gt;
+      &lt;rootTaskHierarchyElements type=&quot;sto.Task&quot; uuid=&quot;a0775c04-6f8b-4933-b5e0-4119416e0b86&quot;&gt;
+        &lt;isExplicit&gt;true&lt;/isExplicit&gt;
+        &lt;rates type=&quot;sto.ModelWideEventRate&quot; uuid=&quot;2439c591-6a68-4e24-ba80-8c4e18e786f6&quot;&gt;
+          &lt;annotation&gt;Inf&lt;/annotation&gt;
+          &lt;clockId&gt;ParameterChangeEvent&lt;/clockId&gt;
+          &lt;colorIndex&gt;-1&lt;/colorIndex&gt;
+          &lt;description&gt;Constant&lt;/description&gt;
+          &lt;rateIdx&gt;-1&lt;/rateIdx&gt;
+          &lt;taskId&gt;ModelWideParameterChangeEvent&lt;/taskId&gt;
+          &lt;useForExecution&gt;NotForExecution&lt;/useForExecution&gt;
+          &lt;rateSpec type=&quot;sto.RateSpec&quot; uuid=&quot;86a89c2d-1ded-4568-a8cc-d14260163636&quot;&gt;
+            &lt;period&gt;inf&lt;/period&gt;
+            &lt;rateType&gt;ModelWideParameterChangeEvent&lt;/rateType&gt;
+          &lt;/rateSpec&gt;
+        &lt;/rates&gt;
+        &lt;schedulingClockId&gt;ParameterChangeEvent&lt;/schedulingClockId&gt;
+        &lt;timeKeeperClockId&gt;drone_wrapper::defaultTimer&lt;/timeKeeperClockId&gt;
+        &lt;elementType&gt;Task&lt;/elementType&gt;
+        &lt;identifier&gt;ModelWideParameterChangeEvent&lt;/identifier&gt;
+        &lt;priority&gt;-1&lt;/priority&gt;
+      &lt;/rootTaskHierarchyElements&gt;
+      &lt;rootTaskHierarchyElements type=&quot;sto.Task&quot; uuid=&quot;8d7899de-98d3-443a-a06f-9dcd9076bef9&quot;&gt;
+        &lt;isExecutable&gt;true&lt;/isExecutable&gt;
+        &lt;orderIndex&gt;1&lt;/orderIndex&gt;
+        &lt;rates type=&quot;sto.ClassicPeriodicDiscreteRate&quot; uuid=&quot;23beb726-b74b-41f2-af85-69e0b7c4cf7c&quot;&gt;
+          &lt;annotation&gt;D1&lt;/annotation&gt;
+          &lt;clockId&gt;drone_wrapper::defaultTimer&lt;/clockId&gt;
+          &lt;description&gt;Discrete 1&lt;/description&gt;
+          &lt;taskId&gt;_task0&lt;/taskId&gt;
+          &lt;rateSpec type=&quot;sto.RateSpec&quot; uuid=&quot;a36ba3ec-7b8f-4b07-a624-b2b0223f790f&quot;&gt;
+            &lt;period&gt;.01&lt;/period&gt;
+            &lt;rateType&gt;ClassicPeriodicDiscrete&lt;/rateType&gt;
+          &lt;/rateSpec&gt;
+        &lt;/rates&gt;
+        &lt;rates type=&quot;sto.ClassicPeriodicDiscreteRate&quot; uuid=&quot;eff5edd0-49d3-4e8f-8905-bc8d49f84d95&quot;&gt;
+          &lt;annotation&gt;D2&lt;/annotation&gt;
+          &lt;clockId&gt;drone_wrapper::defaultTimer&lt;/clockId&gt;
+          &lt;colorIndex&gt;1&lt;/colorIndex&gt;
+          &lt;description&gt;Discrete 2&lt;/description&gt;
+          &lt;rateIdx&gt;1&lt;/rateIdx&gt;
+          &lt;taskId&gt;_task0&lt;/taskId&gt;
+          &lt;rateSpec type=&quot;sto.RateSpec&quot; uuid=&quot;f8b1e92c-9cb3-4586-ad0b-23485d20d7b7&quot;&gt;
+            &lt;period&gt;.1&lt;/period&gt;
+            &lt;rateType&gt;ClassicPeriodicDiscrete&lt;/rateType&gt;
+          &lt;/rateSpec&gt;
+        &lt;/rates&gt;
+        &lt;schedulingClockId&gt;drone_wrapper::defaultTimer&lt;/schedulingClockId&gt;
+        &lt;timeKeeperClockId&gt;drone_wrapper::defaultTimer&lt;/timeKeeperClockId&gt;
+        &lt;elementType&gt;Task&lt;/elementType&gt;
+        &lt;identifier&gt;_task0&lt;/identifier&gt;
+        &lt;priority&gt;40&lt;/priority&gt;
+      &lt;/rootTaskHierarchyElements&gt;
+      &lt;taskDependencyGraph type=&quot;sto.SerializedTaskConnectionList&quot; uuid=&quot;e2c869bd-8a02-4b94-b0ce-6690efca27f9&quot;&gt;
+        &lt;clockIdentifier&gt;ParameterChangeEvent&lt;/clockIdentifier&gt;
+        &lt;taskIdentifier&gt;ModelWideParameterChangeEvent&lt;/taskIdentifier&gt;
+      &lt;/taskDependencyGraph&gt;
+      &lt;taskDependencyGraph type=&quot;sto.SerializedTaskConnectionList&quot; uuid=&quot;135774cf-1e88-4f74-8f78-7ccbb113fc41&quot;&gt;
+        &lt;clockIdentifier&gt;drone_wrapper::defaultTimer&lt;/clockIdentifier&gt;
+        &lt;taskIdentifier&gt;_task0&lt;/taskIdentifier&gt;
+      &lt;/taskDependencyGraph&gt;
+      &lt;taskPriorityDirection&gt;HighNumberLast&lt;/taskPriorityDirection&gt;
+    &lt;/taskRegistry&gt;
+  &lt;/sto.Registry&gt;
+&lt;/slexec_sto&gt;</timingAndTaskingRegistry>
+    <varSigHier>,,</varSigHier>
+    <zeroInternalMemoryAtStartupUnchecked>true</zeroInternalMemoryAtStartupUnchecked>
+    <FMUBlockMap type="ModelRefInfoRepo.FMUBlockInfo" uuid="124dc425-bbdd-4450-bb2b-74e0cde03a20"/>
+    <argumentParameterSourceMap type="ModelRefInfoRepo.ArgumentValueSourceMap" uuid="ee76922d-017f-49ff-92d6-ddef1ecc287a">
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="83ce9525-64a0-417c-951d-d0bbed59d20c">
+        <name>1.Cx</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>Cx</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="a3a112fa-6d7c-4cde-a60c-2938ee143243">
+        <name>1.Cy</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>Cy</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="438b25fb-ea33-4b4d-8264-fb6f597cde3e">
+        <name>1.enable_input_delay</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>enable_input_delay</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="4e3b154a-cb31-4b4a-b605-c6a8e5d4ed22">
+        <name>1.gravity</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>gravity</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="2e7e99ef-8976-426f-a640-5fc0c3814f43">
+        <name>1.mass</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>mass</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="bb8f988d-dc65-4209-be50-287c8f4f222c">
+        <name>1.phi_K</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>phi_K</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="7ce84b54-cb4e-4f4b-925e-14eb232254c4">
+        <name>1.phi_max</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>phi_max</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="f5e52fe0-9676-4fd3-995e-4e9a9f75f359">
+        <name>1.phi_omega</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>phi_omega</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="93a277f5-deda-4f04-9e7a-35656544b09a">
+        <name>1.phi_zeta</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>phi_zeta</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="2a5c290f-b1fd-4159-bf1f-f20a53ba7091">
+        <name>1.theta_K</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>theta_K</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="efd52367-0e70-4758-9afb-0ef3e94a428e">
+        <name>1.theta_max</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>theta_max</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="696a1f12-3bd3-43e0-b536-8303723f3ca5">
+        <name>1.theta_omega</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>theta_omega</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="bc77fbbf-fec8-403f-ab1d-02b992d8f7d4">
+        <name>1.theta_zeta</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>theta_zeta</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="98e73b4f-8e07-4655-aec2-988ede7d867c">
+        <name>1.yawp_K</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>yawp_K</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="f735f21b-798e-4226-8fe6-2ad642db7261">
+        <name>1.yawp_max</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>yawp_max</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="9b72bdbb-ba7e-43f3-9df7-2d5e7a41dfcd">
+        <name>1.yawp_tal</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>yawp_tal</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="3da7a011-e7f1-4a89-8145-f980198478bb">
+        <name>1.zp_K</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>zp_K</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="11160777-792b-457e-b459-452e196b06df">
+        <name>1.zp_max</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>zp_max</srcPrmName>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValueSource" uuid="6505a28c-b917-45c3-82fa-62b6c602c2c3">
+        <name>1.zp_tal</name>
+        <srcPath>drone_wrapper/Model</srcPath>
+        <srcPrmName>zp_tal</srcPrmName>
+      </entries>
+    </argumentParameterSourceMap>
+    <argumentParameters type="ModelRefInfoRepo.ArgumentValueMap" uuid="26a6287b-bd42-4603-ab5c-23c2b82ca110">
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="cb0e7cd9-7394-4b4f-84c5-638b5795daf3">
+        <name>1.Cx</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="eb3cadf1-13fd-485c-9a8d-6f28d61de462">
+        <name>1.Cy</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="5b3da0d2-6f79-4ed0-800e-e370c8e19ab9">
+        <name>1.enable_input_delay</name>
+        <value>AAFJTQAAAAAOAAAAMAAAAAYAAAAIAAAACQIAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAACAAEAAQAAAA==</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="7a92cbb2-279e-4052-9a28-0de005a7dc24">
+        <name>1.gravity</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAB+F61G4niNA</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="7d51d66d-72cd-4e9e-a832-beb46e225ba9">
+        <name>1.mass</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="294fb686-b206-4308-adce-05209e4070e5">
+        <name>1.phi_K</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="763d3ec5-00bb-4c65-9bae-4509e8539f81">
+        <name>1.phi_max</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="e93f537e-4033-4d1c-a8cc-edaf9dc56d5e">
+        <name>1.phi_omega</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="8ac10f5e-549c-421c-b482-cec8b565d176">
+        <name>1.phi_zeta</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="ef4fe3d4-3082-4799-9aca-e47562f9f727">
+        <name>1.theta_K</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="d6db9d8d-b5c8-4ba7-acfa-8e1fce8ba56a">
+        <name>1.theta_max</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="cda03725-da85-43e5-9400-e5552a0d51f3">
+        <name>1.theta_omega</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="f10e4c53-c106-496e-9fff-a1cf9c49d629">
+        <name>1.theta_zeta</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="b4952e46-6fa4-4542-abde-f4bb98b66a0f">
+        <name>1.yawp_K</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="60e6b15f-e523-4ac6-a085-2dd1e1d587cd">
+        <name>1.yawp_max</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="3828a017-30e4-460d-87a6-7da449e0b77e">
+        <name>1.yawp_tal</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="363f30f2-6a84-44a4-a156-631c4e7c6cb8">
+        <name>1.zp_K</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="2e2c5f25-e745-4bf8-9c9e-c9c9e340f4f6">
+        <name>1.zp_max</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+      <entries type="ModelRefInfoRepo.ArgumentValue" uuid="0a90d876-4d0f-4db3-a34c-55b5813b1eb7">
+        <name>1.zp_tal</name>
+        <value>AAFJTQAAAAAOAAAAOAAAAAYAAAAIAAAABgAAAAAAAAAFAAAACAAAAAEAAAABAAAAAQAAAAAAAAAJAAAACAAAAAAAAAAAAPA/</value>
+      </entries>
+    </argumentParameters>
+    <codeGenInfo type="ModelRefInfoRepo.CodeGenInformation" uuid="b529c2b7-3dbb-40f7-bbee-168166d6a861"/>
+    <compiledVariantInfos type="ModelRefInfoRepo.CompiledVariantInfoMap" uuid="c3c45baf-e91a-4bf3-97fc-b9ff5de1178a">
+      <entries type="ModelRefInfoRepo.CompiledVariantInfo" uuid="2d60710e-80f7-4676-aa35-8a3c7434fa60">
+        <IsActive>true</IsActive>
+        <IsInCodegen>true</IsInCodegen>
+        <modelBlockPath>drone_wrapper/Model</modelBlockPath>
+      </entries>
+    </compiledVariantInfos>
+    <configSettingsForConsistencyChecks type="ModelRefInfoRepo.ConfigSettingsForConsistencyChecks" uuid="264d5a5e-aac6-441f-af2e-8d7c92dfd0de">
+      <consistentOutportInitialization>true</consistentOutportInitialization>
+      <dateTimeAtTZero>0.0</dateTimeAtTZero>
+      <dateTimeAtTZero>0.0</dateTimeAtTZero>
+      <dateTimeAtTZero>0.0</dateTimeAtTZero>
+      <dateTimeAtTZero>0.0</dateTimeAtTZero>
+      <dateTimeAtTZero>0.0</dateTimeAtTZero>
+      <dateTimeAtTZero>0.0</dateTimeAtTZero>
+      <fixedStepSize>.01</fixedStepSize>
+      <frameDiagnosticSetting>2</frameDiagnosticSetting>
+      <hasHybridSampleTime>true</hasHybridSampleTime>
+      <signalLoggingSaveFormat>2</signalLoggingSaveFormat>
+      <simSIMDOptimization>1</simSIMDOptimization>
+      <solverName>FixedStepDiscrete</solverName>
+      <solverType>SOLVER_TYPE_FIXEDSTEP</solverType>
+      <hardwareSettings type="ModelRefInfoRepo.HardwareSettings" uuid="4c5ae3ef-772d-48a3-92e6-ad34a55aee1a">
+        <prodBitPerChar>8</prodBitPerChar>
+        <prodBitPerDouble>64</prodBitPerDouble>
+        <prodBitPerFloat>32</prodBitPerFloat>
+        <prodBitPerInt>32</prodBitPerInt>
+        <prodBitPerLong>32</prodBitPerLong>
+        <prodBitPerLongLong>64</prodBitPerLongLong>
+        <prodBitPerPointer>64</prodBitPerPointer>
+        <prodBitPerPtrDiffT>64</prodBitPerPtrDiffT>
+        <prodBitPerShort>16</prodBitPerShort>
+        <prodBitPerSizeT>64</prodBitPerSizeT>
+        <prodEndianess>1</prodEndianess>
+        <prodShiftRight>true</prodShiftRight>
+        <prodWordSize>64</prodWordSize>
+      </hardwareSettings>
+    </configSettingsForConsistencyChecks>
+    <controllableInputRatesMap type="ModelRefInfoRepo.VarTsUIDMap" uuid="68935860-b0a6-4f79-b6c0-4795044e5d99"/>
+    <controllableOutputRatesMap type="ModelRefInfoRepo.VarTsUIDMap" uuid="1d22fd9c-4c49-4ac9-a71f-dc0b31fb78f3"/>
+    <dataPortGroup type="ModelRefInfoRepo.DataPortGroup" uuid="fde030a0-4c9c-4676-9566-ee4293d9d71d">
+      <compDataOutputPorts>0</compDataOutputPorts>
+      <dataOutputPorts>0</dataOutputPorts>
+    </dataPortGroup>
+    <expFcnUnconnectedDataPortGroup type="ModelRefInfoRepo.DataPortGroup" uuid="c0809b85-a910-4906-832d-ec2a8a611688"/>
+    <interfaceParameterInfo type="ModelRefInfoRepo.InterfaceParameterInfo" uuid="499cb87f-cbc9-428a-92f9-4466d8c1f815"/>
+    <messageInfo type="ModelRefInfoRepo.MessageInformation" uuid="a426ea69-276f-42fb-88d5-4f5d20adeac2"/>
+    <methodInfo type="ModelRefInfoRepo.MethodExistenceInfo" uuid="60ae1cdc-7664-4223-b653-f9a41be612a2"/>
+    <periodicEventPortUnsupportedBlockInfo type="ModelRefInfoRepo.PeriodicEventPortUnsupportedBlockInfo" uuid="a7b62d00-89ef-46d4-94bd-5623b0648818">
+      <multiRateModelBlocks>drone_wrapper/Model</multiRateModelBlocks>
+    </periodicEventPortUnsupportedBlockInfo>
+    <portGroupsRequireSameRate type="ModelRefInfoRepo.PortGroupsRequireSameRate" uuid="f7f0a6af-5b6f-4c14-9b34-8a50dbe06f34">
+      <DSMPortGroups type="ModelRefInfoRepo.NameToPortGroupIdxVectMap" uuid="17b89688-c209-4b07-ac8f-23f1b1a0f0ce"/>
+      <GlobalDSMPortGroups type="ModelRefInfoRepo.NameToPortGroupIdxVectMap" uuid="49fa2d39-ba21-44cd-a727-08a0071d8910"/>
+      <mergedPortGroups type="ModelRefInfoRepo.NameToPortGroupIdxVectMap" uuid="15b70098-a77a-4520-96d2-19f1643439f8"/>
+    </portGroupsRequireSameRate>
+    <rateBasedMdlGlobalDSMRateSpec type="ModelRefInfoRepo.GlobalDSMRateSpecMap" uuid="299c39bf-0d43-4ba6-bf0b-8e440dc572f4"/>
+    <rateSpecOfGlobalDSMAccessedByDescExpFcnMdlMap type="ModelRefInfoRepo.GlobalDSMRateSpecMap" uuid="6fd4fcaa-271c-498a-93f6-2a3baa1f2d9c"/>
+    <rootBlockDiagramInterface type="ci.Model" uuid="1779d346-e6e6-4306-83da-cc4f100bcc32">
+      <p_RootComponentInterface type="ci.ComponentInterface" uuid="d124e5c3-813e-42ab-9e2b-e5b134393f9a">
+        <p_Name>drone_wrapper</p_Name>
+        <p_OutputPorts type="ci.SignalInterface" uuid="c42fffbc-251e-48d3-bd35-a63c76207a9d">
+          <p_ComputedNumericDimensions>1.0</p_ComputedNumericDimensions>
+          <p_ComputedSampleTime>.01</p_ComputedSampleTime>
+          <p_ComputedSampleTime>0.0</p_ComputedSampleTime>
+          <p_ComputedType>BusGroundTruth</p_ComputedType>
+          <p_Name>ground_truth</p_Name>
+        </p_OutputPorts>
+        <p_Type>ROOT</p_Type>
+      </p_RootComponentInterface>
+    </rootBlockDiagramInterface>
+    <simulinkFunctions type="ModelRefInfoRepo.SimulinkFunctions" uuid="3be743c3-0f14-4c39-bf81-268249902dc5">
+      <compSimulinkFunctionCatalog></compSimulinkFunctionCatalog>
+    </simulinkFunctions>
+    <sltpContext type="sltp.mm.core.Context" uuid="b1cba6d4-d38b-40a7-84d8-f76052d95b28">
+      <globalData type="sltp.mm.core.GlobalData" uuid="6d090a76-f4f0-444d-a8f6-bd7aa51264ad">
+        <dataName>portground_truth</dataName>
+        <type>RootOutport</type>
+      </globalData>
+      <priorityDirection>HighNumberLast</priorityDirection>
+      <unusedTaskIds>1</unusedTaskIds>
+      <defaultBarrierBehavior type="sltp.mm.core.BarrierBehavior" uuid="b387ac2e-750f-4ae0-b5a1-9d1b3da96163"/>
+      <defaultEventBehavior type="sltp.mm.core.EventBehavior" uuid="714167c6-8c79-4e63-b567-c333cbfb8e88"/>
+      <editorState type="sltp.mm.core.EditorState" uuid="5184c144-704a-44b5-985f-c6f5e26d435c">
+        <isSynchronized>true</isSynchronized>
+        <panelState type="sltp.mm.core.EditorPanelState" uuid="f9c201a7-4f3b-4beb-ac88-63303234269d"/>
+      </editorState>
+      <rootTask type="sltp.mm.core.Task" uuid="48df9a3c-378d-4948-bad6-0f1395b63671">
+        <context type="sltp.mm.core.Context" uuid="b1cba6d4-d38b-40a7-84d8-f76052d95b28"/>
+        <explicit>false</explicit>
+        <name>Default</name>
+        <priority>-2147483648</priority>
+        <subgraph type="sltp.mm.core.Graph" uuid="54d17b02-2251-42b5-b1da-54ba9c581666">
+          <tasks type="sltp.mm.core.Task" uuid="794a1210-05ae-4755-818f-30569ec6fb9d">
+            <context type="sltp.mm.core.Context" uuid="b1cba6d4-d38b-40a7-84d8-f76052d95b28"/>
+            <explicit>false</explicit>
+            <id>2</id>
+            <isTimed>true</isTimed>
+            <name>D1</name>
+            <priority>40</priority>
+            <rates type="sltp.mm.core.Rate" uuid="bab1efd4-4fd2-49f4-911e-d207c980f091">
+              <annotation>D1</annotation>
+              <color>-12240129</color>
+              <hasBlocks>true</hasBlocks>
+              <identifier>ClassicPeriodicDiscrete0.010</identifier>
+              <rateIndex>0</rateIndex>
+              <rateSpec type="sltp.mm.core.RateSpec">
+                <period>.01</period>
+              </rateSpec>
+              <sti>0</sti>
+            </rates>
+            <rates type="sltp.mm.core.Rate" uuid="3fc3f317-5aff-43ff-8ab3-304143aa5870">
+              <annotation>D2</annotation>
+              <color>986198527</color>
+              <hasBlocks>true</hasBlocks>
+              <rateIndex>1</rateIndex>
+              <rateSpec type="sltp.mm.core.RateSpec">
+                <period>.1</period>
+              </rateSpec>
+              <sti>1</sti>
+            </rates>
+          </tasks>
+        </subgraph>
+      </rootTask>
+    </sltpContext>
+    <stateWriterToOwnerMap type="ModelRefInfoRepo.StateWriterInfo" uuid="d54a0832-5ca2-427e-9b6f-87ef622b2a39"/>
+    <stoClientDataRegistry type="sto.ClientDataRegistry" uuid="4ae8b7d3-5494-44bd-93f5-054ac43a7c8f">
+      <dataSets type="sto.ClientClockNamedDataSet" uuid="5f0c54e1-cd32-4298-871b-5c75191cf762">
+        <tag>sltpEvents</tag>
+      </dataSets>
+      <dataSets type="sto.ClientTaskHierarchyElementNamedDataSet" uuid="38c80b47-2ee3-4827-8417-badc934d02e8">
+        <tag>sltpTaskGroups</tag>
+      </dataSets>
+      <dataSets type="sto.ClientTaskHierarchyElementNamedDataSet" uuid="bf756e90-5ce1-4f9a-a4d0-f9afda85d256">
+        <dSet type="ModelRefInfoRepo.SltpTaskData" uuid="55d565bb-507e-4abf-8cbc-fad3b9702ccf"/>
+        <tSet type="ModelRefInfoRepo.SltpTaskData" uuid="55d565bb-507e-4abf-8cbc-fad3b9702ccf">
+          <dataName>D1</dataName>
+          <linkedSet type="sto.ClientTaskHierarchyElementNamedDataSet" uuid="bf756e90-5ce1-4f9a-a4d0-f9afda85d256"/>
+          <id type="sto.TaskHierarchyElementId">
+            <clockId>drone_wrapper::defaultTimer</clockId>
+            <id>_task0</id>
+          </id>
+        </tSet>
+        <tag>sltpTasks</tag>
+      </dataSets>
+    </stoClientDataRegistry>
+    <valueInterfaceParameters type="ModelRefInfoRepo.ValueInterfaceInfoMap" uuid="40572a87-ed57-4bf6-ac9d-e39b7f7a7122">
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="25eb9151-1102-43e1-b78b-4a8eca9bb120">
+        <name>1.Cx</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="250c9082-d3a6-44ff-be05-9de5cf200548">
+        <name>1.Cy</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="d6d11c34-1527-4113-898d-4fbbac9c981a">
+        <name>1.enable_input_delay</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="4643c636-d26b-48cd-aeb0-b8e891abe96a">
+        <name>1.gravity</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="6363674d-3dfa-44cd-b999-ff7805aca47c">
+        <name>1.mass</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="ad3da59b-4659-4e7c-b135-c578721242c4">
+        <name>1.phi_K</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="0a2aea13-8ebf-4b2d-a91c-5c790ff7bf86">
+        <name>1.phi_max</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="1341dc9b-d858-4af8-a375-f5aabdfd4485">
+        <name>1.phi_omega</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="72d4f0d3-c775-420f-b40f-e7932be2bf66">
+        <name>1.phi_zeta</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="0c8c73b8-ba55-424c-9d99-2f17a91e93d7">
+        <name>1.theta_K</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="c4999d17-0a97-4772-bf2d-68655d0cf432">
+        <name>1.theta_max</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="4e6cad35-388f-47ec-8516-dffb0d7cdaff">
+        <name>1.theta_omega</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="f1186533-595f-4908-bb3f-4325135caf75">
+        <name>1.theta_zeta</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="d25263ae-a325-452d-a7aa-c0f3d4217235">
+        <name>1.yawp_K</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="6512926a-1d64-44ef-8ebc-8420f93e8653">
+        <name>1.yawp_max</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="a9e97e2c-7cfb-47b4-bf1a-de7203036105">
+        <name>1.yawp_tal</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="49b0949f-4fa9-4f7a-b19f-d13fe25cf685">
+        <name>1.zp_K</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="ab97fbcc-f513-497c-972c-066043ad2ef2">
+        <name>1.zp_max</name>
+      </entries>
+      <entries type="ModelRefInfoRepo.ValueInterfaceInfo" uuid="7c4a9792-0e94-490d-aefb-2f07353fe06f">
+        <name>1.zp_tal</name>
+      </entries>
+    </valueInterfaceParameters>
+    <varTsUIDMap type="ModelRefInfoRepo.VarTsUIDMap" uuid="500a3224-0e87-452e-a401-d344d4345d39"/>
+  </ModelRefInfoRepo.ModelRefInfoRoot>
+</MF0>

@@ -1,0 +1,1 @@
+var modelInfo = {model:"NumLinearModel"};var modelHierarchy=[{model:"NumLinearModel",relativePath:"_internal.html",parent:"null"},];var AddCode = true;var ProtectedModel = false;

@@ -1,0 +1,70 @@
+Para executar a classe Simulator em um arquivo Python, você pode usar a biblioteca pybind11 para criar bindings entre o código C++ e Python. Isso permitirá que você chame métodos da classe Simulator diretamente em Python.
+
+Aqui estão os passos para fazer isso:
+
+1. Instale o pybind11
+Certifique-se de que o pybind11 está instalado no seu ambiente Python. Você pode instalá-lo com o seguinte comando:
+pip install pybind11
+2. Crie um arquivo de binding em C++
+Crie um arquivo C++ que exponha a classe Simulator para Python usando pybind11. Por exemplo, crie um arquivo chamado simulator_bindings.cpp com o seguinte conteúdo:
+#include <pybind11/pybind11.h>
+#include <pybind11/chrono.h>
+#include "Simulator.h"
+
+namespace py = pybind11;
+
+PYBIND11_MODULE(simulator, m) {
+    py::class_<Simulator>(m, "Simulator")
+        .def(py::init<>())  // Construtor
+        .def("initialize", &Simulator::initialize)
+        .def("run", &Simulator::run)
+        .def("run_real_time", &Simulator::run_real_time)
+        .def("run_non_real_time", &Simulator::run_non_real_time)
+        .def_readwrite("is_real_time", &Simulator::is_real_time)
+        .def_readwrite("base_rate", &Simulator::base_rate)
+        .def_readwrite("simulation_time", &Simulator::simulation_time);
+}
+3. Compile o módulo Python
+Você precisará compilar o arquivo de binding para criar um módulo Python. Crie um arquivo setup.py para facilitar a compilação:
+from setuptools import setup, Extension
+from pybind11.setup_helpers import Pybind11Extension, build_ext
+
+ext_modules = [
+    Pybind11Extension(
+        "simulator",
+        ["simulator_bindings.cpp", "Simulator.cpp"],
+        include_dirs=["."],  # Adicione o caminho para os headers
+        language="c++",
+    ),
+]
+
+setup(
+    name="simulator",
+    ext_modules=ext_modules,
+    cmdclass={"build_ext": build_ext},
+)
+4. Compile o módulo
+Execute o seguinte comando no terminal para compilar o módulo:
+python setup.py build_ext --inplace
+Isso criará um arquivo .pyd (no Windows) ou .so (em outros sistemas) que pode ser importado no Python.
+
+5. Use o módulo no Python
+Agora você pode usar o módulo no Python. Por exemplo, crie um arquivo telo.py com o seguinte conteúdo:
+import simulator
+
+# Crie uma instância do simulador
+sim = simulator.Simulator()
+
+# Configure os parâmetros
+sim.is_real_time = False
+sim.base_rate = 0.01
+sim.simulation_time = 5
+
+# Inicialize e execute
+sim.initialize()
+sim.run()
+6. Execute o script Python
+Execute o script Python normalmente:
+
+Isso permitirá que você utilize a classe Simulator diretamente no Python. Se precisar de ajuda com algum dos passos, me avise!
+
