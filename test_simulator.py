@@ -25,13 +25,23 @@ def read_csv_and_adjust_time(file_path):
     return data
 
 if __name__ == "__main__":
-    file_path = "experiments/ExpTodos_manual_x.csv"  # Substitua pelo caminho correto
+    file_path = "experiments/ExpTodos_manual_x.csv"  
+    file_path = "experiments/ExpX_senoide_id1.csv" 
     data = read_csv_and_adjust_time(file_path)
     print(data)
 
     # Exemplo de plotagem em relação ao tempo
     plt.figure(1)
     plt.plot(data['time'], data['filtered_pose/vxb'], label='filtered_pose/vxb')
+    plt.plot(data['time'], data['u_control/ux'], label='u_control/ux')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Values')
+    plt.title('Data over Time')
+    plt.legend()
+    plt.show(block=False)
+
+    plt.figure(2)
+    plt.plot(data['time'], data['filtered_pose/pitch'], label='filtered_pose/pitch')
     plt.plot(data['time'], data['u_control/ux'], label='u_control/ux')
     plt.xlabel('Time (s)')
     plt.ylabel('Values')
@@ -49,9 +59,19 @@ if __name__ == "__main__":
     simdata = {}
     simdata['dx_mps'] = [output_item.dx_mps for output_item in output]
     simdata['x_m'] = [output_item.x_m for output_item in output]
+    simdata['pitch'] = [output_item.pitch_rad for output_item in output]
     
-    plt.figure(2)
+    plt.figure(3)
     plt.plot(data['time'], simdata['dx_mps'], label='dx_mps')
+    plt.plot(data['time'], data['u_control/ux'], label='u_control/ux')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Values')
+    plt.title('Segunda Figura')
+    plt.legend()
+    plt.show(block=False)
+
+    plt.figure(4)
+    plt.plot(data['time'], simdata['pitch'], label='pitch')
     plt.plot(data['time'], data['u_control/ux'], label='u_control/ux')
     plt.xlabel('Time (s)')
     plt.ylabel('Values')
