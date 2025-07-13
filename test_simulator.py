@@ -143,253 +143,92 @@ if __name__ == "__main__":
     # Adicionar um título geral para todos os subplots
     fig.suptitle('Experement used for optimization', fontsize=16)
 
-    # Ajustar layout
-    plt.tight_layout()
-    plt.show(block=False)
-    # Results Senoide id2
-    file_path = "experiments/ExpX_senoide_id1.csv" 
-    data = read_csv_and_adjust_time(file_path)
 
-    sim_otimizados = simulator.Simulator()
-    params = sim_otimizados.get_params()
-    params.pitch_K = result.x[0]
-    params.pitch_omega = result.x[1]
-    params.pitch_zeta = result.x[2]
-    params.pitch_max = result.x[3]
-    sim_otimizados.set_params(params)
-    sim_otimizados.initialize()
-    sim_otimizados.run_input_vector_based(upitch=data['u_control/ux'].tolist())
-    output_oti = sim_otimizados.get_rtY_vector()
-    simOtimizados = {}
-    simOtimizados['dx_mps'] = [output_item.dx_mps for output_item in output_oti]
-    simOtimizados['x_m'] = [output_item.x_m for output_item in output_oti]
-    simOtimizados['pitch'] = [output_item.pitch_rad for output_item in output_oti]
+    # Lista de experimentos
+    experiments = [
+        ("ExpX_senoide_id1.csv", "Senoide id 1"),
+        ("ExpX_senoide_id2.csv", "Senoide id 2"),
+        ("ExpX_senoide_id3.csv", "Senoide id 3"),
+        ("ExpTodos_manual_x.csv", "Manual Input")
+    ]
 
-    # Criando subplots para pitch, dx_mps e x_m
-    fig, axs = plt.subplots(4, 1, figsize=(10, 8))
+    # Acumular resultados de MSE para todas as senoides e manual
+    mse_results_all = {}
 
-    # Plot para pitch
-    axs[0].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
-    axs[0].plot(data['time'], simOtimizados['pitch'], label='Optimized Pitch', linestyle='--')
-    axs[0].set_title('Pitch')
-    axs[0].set_xlabel('Time (s)')
-    axs[0].set_ylabel('Pitch (rad)')
-    axs[0].legend()
+    for file_path, label in experiments:
+        data = read_csv_and_adjust_time(f"experiments/{file_path}")
 
-    # Plot para dx_mps
-    axs[1].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
-    axs[1].plot(data['time'], simOtimizados['dx_mps'], label='Optimized dx_mps', linestyle='--')
-    axs[1].set_title('dx_mps')
-    axs[1].set_xlabel('Time (s)')
-    axs[1].set_ylabel('dx_mps (m/s)')
-    axs[1].legend()
+        sim_otimizados = simulator.Simulator()
+        params = sim_otimizados.get_params()
+        params.pitch_K = result.x[0]
+        params.pitch_omega = result.x[1]
+        params.pitch_zeta = result.x[2]
+        params.pitch_max = result.x[3]
+        sim_otimizados.set_params(params)
+        sim_otimizados.initialize()
+        sim_otimizados.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+        output_oti = sim_otimizados.get_rtY_vector()
+        simOtimizados = {
+            'dx_mps': [output_item.dx_mps for output_item in output_oti],
+            'x_m': [output_item.x_m for output_item in output_oti],
+            'pitch': [output_item.pitch_rad for output_item in output_oti]
+        }
 
-    # Plot para x_m
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
-    axs[2].plot(data['time'], data['filtered_pose/xb'] , label='Experimental x_m')
-    axs[2].plot(data['time'], simOtimizados['x_m'], label='Optimized x_m', linestyle='--')
-    axs[2].set_title('x_m')
-    axs[2].set_xlabel('Time (s)')
-    axs[2].set_ylabel('x_m (m)')
-    axs[2].legend()
+        # Calcular MSE para este experimento
+        data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
+        mse_results_all[label] = {
+            "Pitch": mean_squared_error(data['filtered_pose/pitch'], simOtimizados['pitch']),
+            "dx_mps": mean_squared_error(data['filtered_pose/vxb'], simOtimizados['dx_mps']),
+            "x_m": mean_squared_error(data['filtered_pose/xb'], simOtimizados['x_m'])
+        }
 
-    # Plot para u_theta
-    axs[3].plot(data['time'], data['u_control/ux'] , label='Senoide id 1')
-    axs[3].set_title('u_theta')
-    axs[3].set_xlabel('Time (s)')
-    axs[3].set_ylabel('u_theta')
-    axs[3].legend()
+        # Criar subplots para pitch, dx_mps e x_m
+        fig, axs = plt.subplots(4, 1, figsize=(10, 8))
 
+        # Plot para pitch
+        axs[0].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
+        axs[0].plot(data['time'], simOtimizados['pitch'], label='Optimized Pitch', linestyle='--')
+        axs[0].set_title('Pitch')
+        axs[0].set_xlabel('Time (s)')
+        axs[0].set_ylabel('Pitch (rad)')
+        axs[0].legend()
 
-    # Adicionar um título geral para todos os subplots
-    fig.suptitle('Optimization comparation for senoide id 1', fontsize=16)
+        # Plot para dx_mps
+        axs[1].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
+        axs[1].plot(data['time'], simOtimizados['dx_mps'], label='Optimized dx_mps', linestyle='--')
+        axs[1].set_title('dx_mps')
+        axs[1].set_xlabel('Time (s)')
+        axs[1].set_ylabel('dx_mps (m/s)')
+        axs[1].legend()
 
-    # Ajustar layout
-    plt.tight_layout()
-    plt.show(block=False)
+        # Plot para x_m
+        axs[2].plot(data['time'], data['filtered_pose/xb'], label='Experimental x_m')
+        axs[2].plot(data['time'], simOtimizados['x_m'], label='Optimized x_m', linestyle='--')
+        axs[2].set_title('x_m')
+        axs[2].set_xlabel('Time (s)')
+        axs[2].set_ylabel('x_m (m)')
+        axs[2].legend()
 
-    # Results Senoide id2
-    file_path = "experiments/ExpX_senoide_id2.csv" 
-    data = read_csv_and_adjust_time(file_path)
+        # Plot para u_theta
+        axs[3].plot(data['time'], data['u_control/ux'], label=label)
+        axs[3].set_title('u_theta')
+        axs[3].set_xlabel('Time (s)')
+        axs[3].set_ylabel('u_theta')
+        axs[3].legend()
 
-    sim_otimizados = simulator.Simulator()
-    params = sim_otimizados.get_params()
-    params.pitch_K = result.x[0]
-    params.pitch_omega = result.x[1]
-    params.pitch_zeta = result.x[2]
-    params.pitch_max = result.x[3]
-    sim_otimizados.set_params(params)
-    sim_otimizados.initialize()
-    sim_otimizados.run_input_vector_based(upitch=data['u_control/ux'].tolist())
-    output_oti = sim_otimizados.get_rtY_vector()
-    simOtimizados = {}
-    simOtimizados['dx_mps'] = [output_item.dx_mps for output_item in output_oti]
-    simOtimizados['x_m'] = [output_item.x_m for output_item in output_oti]
-    simOtimizados['pitch'] = [output_item.pitch_rad for output_item in output_oti]
+        # Adicionar um título geral para todos os subplots
+        fig.suptitle(f'Optimization comparation for {label}', fontsize=16)
 
-    # Criando subplots para pitch, dx_mps e x_m
-    fig, axs = plt.subplots(4, 1, figsize=(10, 8))
+        # Ajustar layout
+        plt.tight_layout()
 
-    # Plot para pitch
-    axs[0].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
-    axs[0].plot(data['time'], simOtimizados['pitch'], label='Optimized Pitch', linestyle='--')
-    axs[0].set_title('Pitch')
-    axs[0].set_xlabel('Time (s)')
-    axs[0].set_ylabel('Pitch (rad)')
-    axs[0].legend()
+        # Salvar a figura
+        plt.savefig(f"results/{label.replace(' ', '_')}.png")
+        plt.close()
 
-    # Plot para dx_mps
-    axs[1].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
-    axs[1].plot(data['time'], simOtimizados['dx_mps'], label='Optimized dx_mps', linestyle='--')
-    axs[1].set_title('dx_mps')
-    axs[1].set_xlabel('Time (s)')
-    axs[1].set_ylabel('dx_mps (m/s)')
-    axs[1].legend()
-
-    # Plot para x_m
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
-    axs[2].plot(data['time'], data['filtered_pose/xb'] , label='Experimental x_m')
-    axs[2].plot(data['time'], simOtimizados['x_m'], label='Optimized x_m', linestyle='--')
-    axs[2].set_title('x_m')
-    axs[2].set_xlabel('Time (s)')
-    axs[2].set_ylabel('x_m (m)')
-    axs[2].legend()
-
-    # Plot para u_theta
-    axs[3].plot(data['time'], data['u_control/ux'] , label='Senoide id 1')
-    axs[3].set_title('u_theta')
-    axs[3].set_xlabel('Time (s)')
-    axs[3].set_ylabel('u_theta')
-    axs[3].legend()
-
-
-    # Adicionar um título geral para todos os subplots
-    fig.suptitle('Optimization comparation for senoide id 2', fontsize=16)
-
-    # Ajustar layout
-    plt.tight_layout()
-    plt.show(block=False)
-
-    # Results Senoide id3
-    file_path = "experiments/ExpX_senoide_id3.csv" 
-    data = read_csv_and_adjust_time(file_path)
-
-    sim_otimizados = simulator.Simulator()
-    params = sim_otimizados.get_params()
-    params.pitch_K = result.x[0]
-    params.pitch_omega = result.x[1]
-    params.pitch_zeta = result.x[2]
-    params.pitch_max = result.x[3]
-    sim_otimizados.set_params(params)
-    sim_otimizados.initialize()
-    sim_otimizados.run_input_vector_based(upitch=data['u_control/ux'].tolist())
-    output_oti = sim_otimizados.get_rtY_vector()
-    simOtimizados = {}
-    simOtimizados['dx_mps'] = [output_item.dx_mps for output_item in output_oti]
-    simOtimizados['x_m'] = [output_item.x_m for output_item in output_oti]
-    simOtimizados['pitch'] = [output_item.pitch_rad for output_item in output_oti]
-
-    # Criando subplots para pitch, dx_mps e x_m
-    fig, axs = plt.subplots(4, 1, figsize=(10, 8))
-
-    # Plot para pitch
-    axs[0].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
-    axs[0].plot(data['time'], simOtimizados['pitch'], label='Optimized Pitch', linestyle='--')
-    axs[0].set_title('Pitch')
-    axs[0].set_xlabel('Time (s)')
-    axs[0].set_ylabel('Pitch (rad)')
-    axs[0].legend()
-
-    # Plot para dx_mps
-    axs[1].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
-    axs[1].plot(data['time'], simOtimizados['dx_mps'], label='Optimized dx_mps', linestyle='--')
-    axs[1].set_title('dx_mps')
-    axs[1].set_xlabel('Time (s)')
-    axs[1].set_ylabel('dx_mps (m/s)')
-    axs[1].legend()
-
-    # Plot para x_m
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
-    axs[2].plot(data['time'], data['filtered_pose/xb'] , label='Experimental x_m')
-    axs[2].plot(data['time'], simOtimizados['x_m'], label='Optimized x_m', linestyle='--')
-    axs[2].set_title('x_m')
-    axs[2].set_xlabel('Time (s)')
-    axs[2].set_ylabel('x_m (m)')
-    axs[2].legend()
-
-    # Plot para u_theta
-    axs[3].plot(data['time'], data['u_control/ux'] , label='Senoide id 1')
-    axs[3].set_title('u_theta')
-    axs[3].set_xlabel('Time (s)')
-    axs[3].set_ylabel('u_theta')
-    axs[3].legend()
-
-
-    # Adicionar um título geral para todos os subplots
-    fig.suptitle('Optimization comparation for senoide id 3', fontsize=16)
-
-    # Ajustar layout
-    plt.tight_layout()
-    plt.show(block=False)
-
-    # Results Senoide manual 
-    file_path = "experiments/ExpTodos_manual_x.csv"  
-    data = read_csv_and_adjust_time(file_path)
-
-    sim_otimizados = simulator.Simulator()
-    params = sim_otimizados.get_params()
-    params.pitch_K = result.x[0]
-    params.pitch_omega = result.x[1]
-    params.pitch_zeta = result.x[2]
-    params.pitch_max = result.x[3]
-    sim_otimizados.set_params(params)
-    sim_otimizados.initialize()
-    sim_otimizados.run_input_vector_based(upitch=data['u_control/ux'].tolist())
-    output_oti = sim_otimizados.get_rtY_vector()
-    simOtimizados = {}
-    simOtimizados['dx_mps'] = [output_item.dx_mps for output_item in output_oti]
-    simOtimizados['x_m'] = [output_item.x_m for output_item in output_oti]
-    simOtimizados['pitch'] = [output_item.pitch_rad for output_item in output_oti]
-
-    # Criando subplots para pitch, dx_mps e x_m
-    fig, axs = plt.subplots(4, 1, figsize=(10, 8))
-
-    # Plot para pitch
-    axs[0].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
-    axs[0].plot(data['time'], simOtimizados['pitch'], label='Optimized Pitch', linestyle='--')
-    axs[0].set_title('Pitch')
-    axs[0].set_xlabel('Time (s)')
-    axs[0].set_ylabel('Pitch (rad)')
-    axs[0].legend()
-
-    # Plot para dx_mps
-    axs[1].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
-    axs[1].plot(data['time'], simOtimizados['dx_mps'], label='Optimized dx_mps', linestyle='--')
-    axs[1].set_title('dx_mps')
-    axs[1].set_xlabel('Time (s)')
-    axs[1].set_ylabel('dx_mps (m/s)')
-    axs[1].legend()
-
-    # Plot para x_m
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
-    axs[2].plot(data['time'], data['filtered_pose/xb'] , label='Experimental x_m')
-    axs[2].plot(data['time'], simOtimizados['x_m'], label='Optimized x_m', linestyle='--')
-    axs[2].set_title('x_m')
-    axs[2].set_xlabel('Time (s)')
-    axs[2].set_ylabel('x_m (m)')
-    axs[2].legend()
-
-    # Plot para u_theta
-    axs[3].plot(data['time'], data['u_control/ux'] , label='manual input')
-    axs[3].set_title('u_theta')
-    axs[3].set_xlabel('Time (s)')
-    axs[3].set_ylabel('u_theta')
-    axs[3].legend()
-
-
-    # Adicionar um título geral para todos os subplots
-    fig.suptitle('Optimization comparation for manual input', fontsize=16)
-
-    # Ajustar layout
-    plt.tight_layout()
-    plt.show(block=True)
+    # Exibir a tabela de resultados de MSE para todos os experimentos
+    print("Tabela de Resultados de MSE para todos os experimentos:")
+    for experiment, mse_values in mse_results_all.items():
+        print(f"\n{experiment}:")
+        for key, value in mse_values.items():
+            print(f"  {key}: {value:.4f}")
