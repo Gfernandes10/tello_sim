@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from scipy.optimize import minimize
 import csv
+from pymoo.core.problem import Problem
+from pymoo.algorithms.moo.nsga2 import NSGA2
+from pymoo.optimize import minimize as pymoo_minimize
+from pymoo.termination import get_termination
 
 
 
@@ -43,32 +47,61 @@ def objective_function(params_values, sim, data):
     simulationdata['pitch'] = [output_item.pitch_rad for output_item in output]
     simulationdata['x_m'] = [output_item.x_m for output_item in output]
 
+    # Garantir que os comprimentos dos dados correspondem
+    min_len = min(len(data['filtered_pose/pitch']), len(simulationdata['pitch']))
+    
+    exp_pitch = data['filtered_pose/pitch'][:min_len]
+    sim_pitch = simulationdata['pitch'][:min_len]
+    
+    exp_vxb = data['filtered_pose/vxb'][:min_len]
+    sim_vxb = simulationdata['dx_mps'][:min_len]
+
+    exp_xb = (data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0])[:min_len]
+    sim_xb = simulationdata['x_m'][:min_len]
+
     # Calcular o MSE entre as curvas
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
-    mse_pitch = mean_squared_error(data['filtered_pose/pitch'], simulationdata['pitch'])
-    mse_vxb = mean_squared_error(data['filtered_pose/vxb'], simulationdata['dx_mps'])
-    mse_xb = mean_squared_error(data['filtered_pose/xb'], simulationdata['x_m'])
-    total_mse = mse_pitch + mse_vxb + mse_xb
-    return mse_pitch
+    mse_pitch = mean_squared_error(exp_pitch, sim_pitch)
+    mse_vxb = mean_squared_error(exp_vxb, sim_vxb)
+    mse_xb = mean_squared_error(exp_xb, sim_xb)
+    
+    return [mse_pitch, mse_vxb, mse_xb]
 
-def optimize_parameters(sim, data):
-    # Valores iniciais para os parâmetros
-    initial_params = [0.5, 0.1, 0.7, 0.5, 1.0]  # pitch_K, pitch_omega, pitch_zeta, pitch_max
+class MultiObjectiveProblem(Problem):
+    def __init__(self, sim, data):
+        super().__init__(n_var=5,
+                         n_obj=3,
+                         n_constr=0,
+                         xl=np.array([0.01, 0.01, 0.01, 0.01, 0.01]),
+                         xu=np.array([10.0, 10.0, 10.0, 10.0, 10.0]))
+        self.sim = sim
+        self.data = data
 
-    # Limites para os parâmetros
-    bounds = [(0.01, 10.0), (0.01, 10.0), (0.01, 10.0), (0.01, 10.0), (0.01, 10.0)]
+    def _evaluate(self, x, out, *args, **kwargs):
+        out["F"] = np.array([objective_function(params_values, self.sim, self.data) for params_values in x])
 
-    # Otimização
-    result = minimize(objective_function, initial_params, args=(sim, data), bounds=bounds, method='Powell')
+def optimize_parameters_nsga2(sim, data):
+    problem = MultiObjectiveProblem(sim, data)
+    
+    algorithm = NSGA2(pop_size=100)
+    
+    termination = get_termination("n_gen", 100)
+    
+    res = pymoo_minimize(problem,
+                       algorithm,
+                       termination,
+                       seed=1,
+                       save_history=False,
+                       verbose=True)
 
-    return result
+    return res
 
 if __name__ == "__main__":
 
     file_path = "experiments/ExpX_senoide_id1.csv" 
     data = read_csv_and_adjust_time(file_path)
+    # Normalizar a posição inicial uma vez
+    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
     print(data)
-
 
     sim = simulator.Simulator()
     sim.initialize()
@@ -81,17 +114,28 @@ if __name__ == "__main__":
 
     print("MSE pré-otimização:", mean_squared_error(data['filtered_pose/vxb'], simdata['dx_mps']))
 
-    # Otimização dos parâmetros
-    result = optimize_parameters(sim, data)
-    print("Parâmetros otimizados:", result.x)
-    print("MSE mínimo:", result.fun)
+    # Otimização dos parâmetros com NSGA-II
+    result_nsga = optimize_parameters_nsga2(sim, data)
+    
+    print("Resultados da Otimização Multiobjetivo (Frente de Pareto):")
+    print("Parâmetros (X):", result_nsga.X)
+    print("Objetivos (F):", result_nsga.F)
+
+    # Escolher a melhor solução de compromisso (menor distância Euclidiana da origem)
+    best_index = np.argmin(np.linalg.norm(result_nsga.F, axis=1))
+    best_params = result_nsga.X[best_index]
+    best_objectives = result_nsga.F[best_index]
+
+    print("\nMelhores Parâmetros Selecionados:", best_params)
+    print("Melhores Objetivos (MSEs):", best_objectives)
 
     sim_otimizados = simulator.Simulator()
     params = sim_otimizados.get_params()
-    params.pitch_K = result.x[0]
-    params.pitch_omega = result.x[1]
-    params.pitch_zeta = result.x[2]
-    params.pitch_max = result.x[3]
+    params.pitch_K = best_params[0]
+    params.pitch_omega = best_params[1]
+    params.pitch_zeta = best_params[2]
+    params.pitch_max = best_params[3]
+    params.Cx = best_params[4]
     sim_otimizados.set_params(params)
     sim_otimizados.initialize()
     sim_otimizados.run_input_vector_based(upitch=data['u_control/ux'].tolist())
@@ -158,13 +202,15 @@ if __name__ == "__main__":
 
     for file_path, label in experiments:
         data = read_csv_and_adjust_time(f"experiments/{file_path}")
+        data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
 
         sim_otimizados = simulator.Simulator()
         params = sim_otimizados.get_params()
-        params.pitch_K = result.x[0]
-        params.pitch_omega = result.x[1]
-        params.pitch_zeta = result.x[2]
-        params.pitch_max = result.x[3]
+        params.pitch_K = best_params[0]
+        params.pitch_omega = best_params[1]
+        params.pitch_zeta = best_params[2]
+        params.pitch_max = best_params[3]
+        params.Cx = best_params[4]
         sim_otimizados.set_params(params)
         sim_otimizados.initialize()
         sim_otimizados.run_input_vector_based(upitch=data['u_control/ux'].tolist())
