@@ -30,41 +30,38 @@ def read_csv_and_adjust_time(file_path):
 def objective_function(params_values, sim, data):
     # Update the parameters in the simulator
     params = sim.get_params()
-    params.pitch_K = params_values[0]
-    params.pitch_omega = params_values[1]
-    params.pitch_zeta = params_values[2]
-    params.pitch_max = params_values[3]
-    params.Cx = params_values[4]  # Adicionando o parâmetro Cx
+    params.roll_K = params_values[0]
+    params.roll_omega = params_values[1]
+    params.roll_zeta = params_values[2]
+    params.roll_max = params_values[3]
+    params.Cy = params_values[4]  # Adicionando o parâmetro Cx
     sim.set_params(params)
 
     # Initialize and run the simulator
     sim.initialize()
-    sim.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+    sim.run_input_vector_based([], uroll=data['u_control/uy'].tolist())
 
     # Get the simulated data
     output = sim.get_rtY_vector()
     simulationdata = {}
-    simulationdata['dx_mps'] = [output_item.dx_mps for output_item in output]
-    simulationdata['pitch'] = [output_item.pitch_rad for output_item in output]
+    simulationdata['dy_mps'] = [output_item.dy_mps for output_item in output]
+    simulationdata['roll'] = [output_item.roll_rad for output_item in output]
     simulationdata['x_m'] = [output_item.x_m for output_item in output]
 
     # Ensure that the lengths of the data match
-    min_len = min(len(data['filtered_pose/pitch']), len(simulationdata['pitch']))
-    
-    exp_pitch = data['filtered_pose/pitch'][:min_len]
-    sim_pitch = simulationdata['pitch'][:min_len]
-    
-    exp_vxb = data['filtered_pose/vxb'][:min_len]
-    sim_vxb = simulationdata['dx_mps'][:min_len]
+    min_len = min(len(data['filtered_pose/roll']), len(simulationdata['roll']))
 
-    exp_xb = (data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0])[:min_len]
-    sim_xb = simulationdata['x_m'][:min_len]
+    exp_roll = data['filtered_pose/roll'][:min_len]
+    sim_roll = simulationdata['roll'][:min_len]
+
+    exp_vyb = data['filtered_pose/vyb'][:min_len]
+    sim_vyb = simulationdata['dy_mps'][:min_len]
 
     # Calculate the MSE between the curves
-    mse_pitch = mean_squared_error(exp_pitch, sim_pitch)
-    mse_vxb = mean_squared_error(exp_vxb, sim_vxb)
-    
-    return [mse_pitch, mse_vxb]
+    mse_roll = mean_squared_error(exp_roll, sim_roll)
+    mse_vyb = mean_squared_error(exp_vyb, sim_vyb)
+
+    return [mse_roll, mse_vyb]
 
 class MultiObjectiveProblem(Problem):
     def __init__(self, sim, data):
@@ -164,30 +161,30 @@ def plot_nsga2_analysis(result_nsga, problem, history=None, param_names=None, re
 if __name__ == "__main__":
 
     experiments = [
-        ("experiments/ExpX_senoide_id1.csv", "Sine id 1"),
-        ("experiments/ExpX_senoide_id2.csv", "Sine id 2"),
-        ("experiments/ExpX_senoide_id3.csv", "Sine id 3"),
-        ("experiments/ExpTodos_manual_x.csv", "Manual Input")
+        ("experiments/ExpY1_senoide_id1.csv", "Sine id 1"),
+        ("experiments/ExpY1_senoide_id2.csv", "Sine id 2"),
+        ("experiments/ExpY2_senoide_id3.csv", "Sine id 3"),
+        ("experiments/ExpTodos_manual_y.csv", "Manual Input")
     ]
-    file_path = "experiments/ExpX_senoide_id1.csv" 
-    results_path = "results/ExpX"
+    file_path = "experiments/ExpY1_senoide_id1.csv" 
+    results_path = "results/ExpY"
     os.makedirs(results_path, exist_ok=True)
     data = read_csv_and_adjust_time(file_path)
     # Normalize the initial position once
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
+    data['filtered_pose/yb'] = data['filtered_pose/yb'] - data['filtered_pose/yb'].iloc[0]
     print(data)
 
     sim = simulator.Simulator()
     sim.initialize()
-    sim.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+    sim.run_input_vector_based([], uroll=data['u_control/uy'].tolist())
     output = sim.get_rtY_vector()
     simdata = {}
-    simdata['dx_mps'] = [output_item.dx_mps for output_item in output]
-    simdata['x_m'] = [output_item.x_m for output_item in output]
-    simdata['pitch'] = [output_item.pitch_rad for output_item in output]
+    simdata['dy_mps'] = [output_item.dy_mps for output_item in output]
+    simdata['y_m'] = [output_item.y_m for output_item in output]
+    simdata['roll'] = [output_item.roll_rad for output_item in output]
 
-    print("Pre-optimization MSE velocity:", mean_squared_error(data['filtered_pose/vxb'], simdata['dx_mps']))
-    print("Pre-optimization MSE pitch:", mean_squared_error(data['filtered_pose/pitch'], simdata['pitch']))
+    print("Pre-optimization MSE velocity:", mean_squared_error(data['filtered_pose/vyb'], simdata['dy_mps']))
+    print("Pre-optimization MSE roll:", mean_squared_error(data['filtered_pose/roll'], simdata['roll']))
 
     # Parameter optimization with NSGA-II
     result_nsga, problem = optimize_parameters_nsga2(sim, data)
@@ -206,57 +203,57 @@ if __name__ == "__main__":
 
     sim_optimized = simulator.Simulator()
     params = sim_optimized.get_params()
-    params.pitch_K = best_params[0]
-    params.pitch_omega = best_params[1]
-    params.pitch_zeta = best_params[2]
-    params.pitch_max = best_params[3]
-    params.Cx = best_params[4]
+    params.roll_K = best_params[0]
+    params.roll_omega = best_params[1]
+    params.roll_zeta = best_params[2]
+    params.roll_max = best_params[3]
+    params.Cy = best_params[4]
     sim_optimized.set_params(params)
     sim_optimized.initialize()
-    sim_optimized.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+    sim_optimized.run_input_vector_based([], uroll=data['u_control/uy'].tolist())
     output_oti = sim_optimized.get_rtY_vector()
     simOptimized = {}
-    simOptimized['dx_mps'] = [output_item.dx_mps for output_item in output_oti]
-    simOptimized['x_m'] = [output_item.x_m for output_item in output_oti]
-    simOptimized['pitch'] = [output_item.pitch_rad for output_item in output_oti]
+    simOptimized['dy_mps'] = [output_item.dy_mps for output_item in output_oti]
+    simOptimized['y_m'] = [output_item.y_m for output_item in output_oti]
+    simOptimized['roll'] = [output_item.roll_rad for output_item in output_oti]
 
 
-    # Creating subplots for pitch, dx_mps, and x_m
+    # Creating subplots for roll, dy_mps, and y_m
     fig, axs = plt.subplots(4, 1, figsize=(10, 8))
 
-    # Plot for u_theta
-    axs[0].plot(data['time'], data['u_control/ux'], label='Sine id 1')
-    axs[0].set_title('u_theta')
+    # Plot for u_roll
+    axs[0].plot(data['time'], data['u_control/uy'], label='Sine id 1')
+    axs[0].set_title('u_roll')
     axs[0].set_xlabel('Time (s)')
-    axs[0].set_ylabel('u_theta')
+    axs[0].set_ylabel('u_roll')
     axs[0].legend(loc='upper right')
 
-    # Plot for pitch
-    axs[1].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
-    axs[1].plot(data['time'], simOptimized['pitch'], label='Optimized Pitch', linestyle='--')
-    axs[1].plot(data['time'], simdata['pitch'], label='Unoptimized Pitch', linestyle=':')
-    axs[1].set_title('Pitch')
+    # Plot for roll
+    axs[1].plot(data['time'], data['filtered_pose/roll'], label='Experimental Roll')
+    axs[1].plot(data['time'], simOptimized['roll'], label='Optimized Roll', linestyle='--')
+    axs[1].plot(data['time'], simdata['roll'], label='Unoptimized Roll', linestyle=':')
+    axs[1].set_title('Roll')
     axs[1].set_xlabel('Time (s)')
-    axs[1].set_ylabel('Pitch (rad)')
+    axs[1].set_ylabel('Roll (rad)')
     axs[1].legend(loc='upper right')
 
-    # Plot for dx_mps
-    axs[2].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
-    axs[2].plot(data['time'], simOptimized['dx_mps'], label='Optimized dx_mps', linestyle='--')
-    axs[2].plot(data['time'], simdata['dx_mps'], label='Unoptimized dx_mps', linestyle=':')
-    axs[2].set_title('dx_mps')
+    # Plot for dy_mps
+    axs[2].plot(data['time'], data['filtered_pose/vyb'], label='Experimental dy_mps')
+    axs[2].plot(data['time'], simOptimized['dy_mps'], label='Optimized dy_mps', linestyle='--')
+    axs[2].plot(data['time'], simdata['dy_mps'], label='Unoptimized dy_mps', linestyle=':')
+    axs[2].set_title('dy_mps')
     axs[2].set_xlabel('Time (s)')
-    axs[2].set_ylabel('dx_mps (m/s)')
+    axs[2].set_ylabel('dy_mps (m/s)')
     axs[2].legend(loc='upper right')
 
     # Plot for x_m
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
-    axs[3].plot(data['time'], data['filtered_pose/xb'], label='Experimental x_m')
-    axs[3].plot(data['time'], simOptimized['x_m'], label='Optimized x_m', linestyle='--')
-    axs[3].plot(data['time'], simdata['x_m'], label='Unoptimized x_m', linestyle=':')
-    axs[3].set_title('x_m')
+    data['filtered_pose/yb'] = data['filtered_pose/yb'] - data['filtered_pose/yb'].iloc[0]
+    axs[3].plot(data['time'], data['filtered_pose/yb'], label='Experimental y_m')
+    axs[3].plot(data['time'], simOptimized['y_m'], label='Optimized y_m', linestyle='--')
+    axs[3].plot(data['time'], simdata['y_m'], label='Unoptimized y_m', linestyle=':')
+    axs[3].set_title('y_m')
     axs[3].set_xlabel('Time (s)')
-    axs[3].set_ylabel('x_m (m)')
+    axs[3].set_ylabel('y_m (m)')
     axs[3].legend(loc='upper right')
 
 
@@ -270,7 +267,7 @@ if __name__ == "__main__":
     plt.close()
 
     # NSGA-II analysis plots
-    param_names = ["pitch_K", "pitch_omega", "pitch_zeta", "pitch_max", "Cx"]
+    param_names = ["roll_K", "roll_omega", "roll_zeta", "roll_max", "Cy"]
     plot_nsga2_analysis(result_nsga, problem, param_names=param_names,results_dir=results_path)
 
     # Accumulate MSE results for all sines and manual
@@ -278,64 +275,64 @@ if __name__ == "__main__":
 
     for file_path, label in experiments:
         data = read_csv_and_adjust_time(file_path)
-        data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
+        data['filtered_pose/y'] = data['filtered_pose/y'] - data['filtered_pose/y'].iloc[0]
 
         sim_optimized = simulator.Simulator()
         params = sim_optimized.get_params()
-        params.pitch_K = best_params[0]
-        params.pitch_omega = best_params[1]
-        params.pitch_zeta = best_params[2]
-        params.pitch_max = best_params[3]
-        params.Cx = best_params[4]
+        params.roll_K = best_params[0]
+        params.roll_omega = best_params[1]
+        params.roll_zeta = best_params[2]
+        params.roll_max = best_params[3]
+        params.Cy = best_params[4]
         sim_optimized.set_params(params)
         sim_optimized.initialize()
-        sim_optimized.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+        sim_optimized.run_input_vector_based([], uroll=data['u_control/uy'].tolist())
         output_oti = sim_optimized.get_rtY_vector()
         simOptimized = {
-            'dx_mps': [output_item.dx_mps for output_item in output_oti],
-            'x_m': [output_item.x_m for output_item in output_oti],
-            'pitch': [output_item.pitch_rad for output_item in output_oti]
+            'dy_mps': [output_item.dy_mps for output_item in output_oti],
+            'y_m': [output_item.y_m for output_item in output_oti],
+            'roll': [output_item.roll_rad for output_item in output_oti]
         }
 
         # Calculate MSE for this experiment
         mse_results_all[label] = {
-            "Pitch": mean_squared_error(data['filtered_pose/pitch'], simOptimized['pitch']),
-            "dx_mps": mean_squared_error(data['filtered_pose/vxb'], simOptimized['dx_mps']),
-            "x_m": mean_squared_error(data['filtered_pose/xb'], simOptimized['x_m'])
+            "Roll": mean_squared_error(data['filtered_pose/roll'], simOptimized['roll']),
+            "dy_mps": mean_squared_error(data['filtered_pose/vyb'], simOptimized['dy_mps']),
+            "y_m": mean_squared_error(data['filtered_pose/y'], simOptimized['y_m'])
         }
 
-        # Create subplots for pitch, dx_mps, and x_m
+        # Create subplots for roll, dy_mps, and y_m
         fig, axs = plt.subplots(4, 1, figsize=(10, 8))
 
-        # Plot for u_theta
-        axs[0].plot(data['time'], data['u_control/ux'], label=label)
-        axs[0].set_title('u_theta')
+        # Plot for u_roll
+        axs[0].plot(data['time'], data['u_control/uy'], label=label)
+        axs[0].set_title('u_roll')
         axs[0].set_xlabel('Time (s)')
-        axs[0].set_ylabel('u_theta')
+        axs[0].set_ylabel('u_roll')
         axs[0].legend(loc='upper right')
 
-        # Plot for pitch
-        axs[1].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
-        axs[1].plot(data['time'], simOptimized['pitch'], label='Optimized Pitch', linestyle='--')
-        axs[1].set_title('Pitch')
+        # Plot for roll
+        axs[1].plot(data['time'], data['filtered_pose/roll'], label='Experimental Roll')
+        axs[1].plot(data['time'], simOptimized['roll'], label='Optimized Roll', linestyle='--')
+        axs[1].set_title('Roll')
         axs[1].set_xlabel('Time (s)')
-        axs[1].set_ylabel('Pitch (rad)')
+        axs[1].set_ylabel('Roll (rad)')
         axs[1].legend(loc='upper right')
 
-        # Plot for dx_mps
-        axs[2].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
-        axs[2].plot(data['time'], simOptimized['dx_mps'], label='Optimized dx_mps', linestyle='--')
-        axs[2].set_title('dx_mps')
+        # Plot for dy_mps
+        axs[2].plot(data['time'], data['filtered_pose/vyb'], label='Experimental dy_mps')
+        axs[2].plot(data['time'], simOptimized['dy_mps'], label='Optimized dy_mps', linestyle='--')
+        axs[2].set_title('dy_mps')
         axs[2].set_xlabel('Time (s)')
-        axs[2].set_ylabel('dx_mps (m/s)')
+        axs[2].set_ylabel('dy_mps (m/s)')
         axs[2].legend(loc='upper right')
 
-        # Plot for x_m
-        axs[3].plot(data['time'], data['filtered_pose/xb'], label='Experimental x_m')
-        axs[3].plot(data['time'], simOptimized['x_m'], label='Optimized x_m', linestyle='--')
-        axs[3].set_title('x_m')
+        # Plot for y_m
+        axs[3].plot(data['time'], data['filtered_pose/yb'], label='Experimental y_m')
+        axs[3].plot(data['time'], simOptimized['y_m'], label='Optimized y_m', linestyle='--')
+        axs[3].set_title('y_m')
         axs[3].set_xlabel('Time (s)')
-        axs[3].set_ylabel('x_m (m)')
+        axs[3].set_ylabel('y_m (m)')
         axs[3].legend(loc='upper right')
 
 
@@ -361,9 +358,9 @@ if __name__ == "__main__":
 
     with open(output_csv_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["Experiment", "Pitch", "dx_mps", "x_m"])
+        writer.writerow(["Experiment", "Roll", "dy_mps", "y_m"])
 
         for experiment, mse_values in mse_results_all.items():
-            writer.writerow([experiment, mse_values["Pitch"], mse_values["dx_mps"], mse_values["x_m"]])
+            writer.writerow([experiment, mse_values["Roll"], mse_values["dy_mps"], mse_values["y_m"]])
 
     print(f"MSE results saved at: {output_csv_path}")
