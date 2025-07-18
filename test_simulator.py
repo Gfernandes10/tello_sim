@@ -1,4 +1,6 @@
+# from tello_sim import simulator
 import simulator
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -28,8 +30,9 @@ def objective_function(params_values, sim, data):
     params.pitch_K = params_values[0]
     params.pitch_omega = params_values[1]
     params.pitch_zeta = params_values[2]
-    params.pitch_max = params_values[3]
-    params.Cx = params_values[4]  # Adicionando o parâmetro Cx
+    # params.pitch_max = best_params[3]
+    params.pitch_max = 0.3
+    params.Cx = params_values[3]
     sim.set_params(params)
 
     # Inicializar e rodar o simulador
@@ -45,11 +48,11 @@ def objective_function(params_values, sim, data):
 
     # Calcular o MSE entre as curvas
     data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
-    mse_pitch = mean_squared_error(data['filtered_pose/pitch'], simulationdata['pitch'])
+    # mse_pitch = mean_absolute_error(data['filtered_pose/pitch'], simulationdata['pitch'])
     mse_vxb = mean_squared_error(data['filtered_pose/vxb'], simulationdata['dx_mps'])
-    mse_xb = mean_squared_error(data['filtered_pose/xb'], simulationdata['x_m'])
-    total_mse = mse_pitch + mse_vxb + mse_xb
-    return mse_pitch
+    # mse_xb = mean_squared_error(data['filtered_pose/xb'], simulationdata['x_m'])
+    # total_mse =  mse_vxb
+    return mse_vxb
 
 def optimize_parameters(sim, data):
     # Valores iniciais para os parâmetros
@@ -165,6 +168,11 @@ if __name__ == "__main__":
         params.pitch_omega = result.x[1]
         params.pitch_zeta = result.x[2]
         params.pitch_max = result.x[3]
+        params.pitch_K = 3.7890115621679845
+        params.pitch_omega = 1.235277252913756
+        params.pitch_zeta = 0.9439859168709424
+        params.pitch_max = 0.3
+        params.Cx = 8.1535879632004  
         sim_otimizados.set_params(params)
         sim_otimizados.initialize()
         sim_otimizados.run_input_vector_based(upitch=data['u_control/ux'].tolist())

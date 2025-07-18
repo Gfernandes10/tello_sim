@@ -16,7 +16,7 @@ void Simulator::initialize(void)
 	// Set default values for static members
 	step_count = simulation_time / base_rate; // Default number of steps for non-real-time simulation
 
-    printf("Simulator started with following parameters: base_rate = %f, simulation_time = %d, step_count = %d\n", base_rate, simulation_time, step_count);
+    // printf("Simulator started with following parameters: base_rate = %f, simulation_time = %d, step_count = %d\n", base_rate, simulation_time, step_count);
 
 }
 void Simulator::run()
@@ -26,7 +26,7 @@ void Simulator::run()
 	} else {
 		run_non_real_time();
 	}
-	printf("Simulation completed.\n");
+	// printf("Simulation completed.\n");
 	fflush(stdout);
 }
 void Simulator::run_real_time(void)
@@ -35,7 +35,7 @@ void Simulator::run_real_time(void)
 		// Call the step function
 		rt_OneStep();
 		double sim_time = i_step_count * base_rate;
-		printf("Simulation time %f s, dx_mps = %f , x_m = %f \n", sim_time, rtObj.rtY.dx_mps, rtObj.rtY.x_m);
+		// printf("Simulation time %f s, dx_mps = %f , x_m = %f \n", sim_time, rtObj.rtY.dx_mps, rtObj.rtY.x_m);
 		std::this_thread::sleep_for(std::chrono::milliseconds(int(base_rate * 1000)));
 	}
 }
@@ -70,7 +70,7 @@ void Simulator::run_input_vector_based(const std::vector<double>& upitch,
     if (uyaw_filled.size() < max_size) uyaw_filled.resize(max_size, 0.0);
 	rtY_vector.clear();
 	//rtY_vector.push_back(rtObj.getExternalOutputs());
-    // Executar a simulação
+    // Executar a simulaï¿½ï¿½o
     for (size_t i = 0; i < max_size; ++i) {
         rtObj.setupitch(upitch_filled[i]);
         rtObj.seturoll(uroll_filled[i]);
@@ -116,23 +116,23 @@ NoLinearModel::InstP Simulator::get_params() const {
 }
 
 void Simulator::set_params(const NoLinearModel::InstP& value) {
-    printf("Setando InstP:\n");
-    printf("  Cx = %f\n", value.Cx);
-    printf("  Cy = %f\n", value.Cy);
-    printf("  pitch_K = %f\n", value.pitch_K);
-    printf("  pitch_max = %f\n", value.pitch_max);
-    printf("  pitch_omega = %f\n", value.pitch_omega);
-    printf("  pitch_zeta = %f\n", value.pitch_zeta);
-    printf("  roll_K = %f\n", value.roll_K);
-    printf("  roll_max = %f\n", value.roll_max);
-    printf("  roll_omega = %f\n", value.roll_omega);
-    printf("  roll_zeta = %f\n", value.roll_zeta);
-    printf("  yawp_K = %f\n", value.yawp_K);
-    printf("  yawp_max = %f\n", value.yawp_max);
-    printf("  yawp_tal = %f\n", value.yawp_tal);
-    printf("  zp_K = %f\n", value.zp_K);
-    printf("  zp_max = %f\n", value.zp_max);
-    printf("  zp_tal = %f\n", value.zp_tal);
+    // printf("Setando InstP:\n");
+    // printf("  Cx = %f\n", value.Cx);
+    // printf("  Cy = %f\n", value.Cy);
+    // printf("  pitch_K = %f\n", value.pitch_K);
+    // printf("  pitch_max = %f\n", value.pitch_max);
+    // printf("  pitch_omega = %f\n", value.pitch_omega);
+    // printf("  pitch_zeta = %f\n", value.pitch_zeta);
+    // printf("  roll_K = %f\n", value.roll_K);
+    // printf("  roll_max = %f\n", value.roll_max);
+    // printf("  roll_omega = %f\n", value.roll_omega);
+    // printf("  roll_zeta = %f\n", value.roll_zeta);
+    // printf("  yawp_K = %f\n", value.yawp_K);
+    // printf("  yawp_max = %f\n", value.yawp_max);
+    // printf("  yawp_tal = %f\n", value.yawp_tal);
+    // printf("  zp_K = %f\n", value.zp_K);
+    // printf("  zp_max = %f\n", value.zp_max);
+    // printf("  zp_tal = %f\n", value.zp_tal);
 	rtObj.set_InstP(value);
 }
 
