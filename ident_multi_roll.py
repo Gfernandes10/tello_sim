@@ -34,7 +34,7 @@ def objective_function(params_values, sim, data):
     params.roll_omega = params_values[1]
     params.roll_zeta = params_values[2]
     params.roll_max = params_values[3]
-    params.Cy = params_values[4]  # Adicionando o parâmetro Cx
+    params.Cy = params_values[4]  # Adicionando o parâmetro Cy
     sim.set_params(params)
 
     # Initialize and run the simulator
@@ -81,7 +81,7 @@ def optimize_parameters_nsga2(sim, data):
     
     algorithm = NSGA2(pop_size=200)
 
-    termination = get_termination("n_gen", 50)
+    termination = get_termination("n_gen", 100)
 
     res = pymoo_minimize(problem,
                        algorithm,
@@ -275,7 +275,7 @@ if __name__ == "__main__":
 
     for file_path, label in experiments:
         data = read_csv_and_adjust_time(file_path)
-        data['filtered_pose/y'] = data['filtered_pose/y'] - data['filtered_pose/y'].iloc[0]
+        data['filtered_pose/yb'] = data['filtered_pose/yb'] - data['filtered_pose/yb'].iloc[0]
 
         sim_optimized = simulator.Simulator()
         params = sim_optimized.get_params()

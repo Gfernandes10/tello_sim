@@ -30,49 +30,40 @@ def read_csv_and_adjust_time(file_path):
 def objective_function(params_values, sim, data):
     # Update the parameters in the simulator
     params = sim.get_params()
-    params.pitch_K = params_values[0]
-    params.pitch_omega = params_values[1]
-    params.pitch_zeta = params_values[2]
-    params.pitch_max = params_values[3]
-    params.Cx = params_values[4]  # Adicionando o parâmetro Cx
+    params.yawp_K = params_values[0]
+    params.yawp_max = params_values[1]
+    params.yawp_tal = params_values[2]
     sim.set_params(params)
 
     # Initialize and run the simulator
     sim.initialize()
-    sim.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+    sim.run_input_vector_based([], [], [], uyaw=data['u_control/uyaw'].tolist())
 
     # Get the simulated data
     output = sim.get_rtY_vector()
     simulationdata = {}
-    simulationdata['dx_mps'] = [output_item.dx_mps for output_item in output]
-    simulationdata['pitch'] = [output_item.pitch_rad for output_item in output]
-    simulationdata['x_m'] = [output_item.x_m for output_item in output]
+    simulationdata['dyaw_radps'] = [output_item.dyaw_radps for output_item in output]
+    simulationdata['yaw_rad'] = [output_item.yaw_rad for output_item in output]
 
     # Ensure that the lengths of the data match
-    min_len = min(len(data['filtered_pose/pitch']), len(simulationdata['pitch']))
-    
-    exp_pitch = data['filtered_pose/pitch'][:min_len]
-    sim_pitch = simulationdata['pitch'][:min_len]
-    
-    exp_vxb = data['filtered_pose/vxb'][:min_len]
-    sim_vxb = simulationdata['dx_mps'][:min_len]
+    min_len = min(len(data['filtered_pose/r']), len(simulationdata['dyaw_radps']))
 
-    exp_xb = (data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0])[:min_len]
-    sim_xb = simulationdata['x_m'][:min_len]
+
+    exp_vyaw = data['filtered_pose/r'][:min_len]
+    sim_vyaw = simulationdata['dyaw_radps'][:min_len]
 
     # Calculate the MSE between the curves
-    mse_pitch = mean_squared_error(exp_pitch, sim_pitch)
-    mse_vxb = mean_squared_error(exp_vxb, sim_vxb)
-    
-    return [mse_pitch, mse_vxb]
+    mse_vyaw = mean_squared_error(exp_vyaw, sim_vyaw)
+
+    return [mse_vyaw]
 
 class MultiObjectiveProblem(Problem):
     def __init__(self, sim, data):
-        super().__init__(n_var=5,
-                         n_obj=2,
+        super().__init__(n_var=3,
+                         n_obj=1,
                          n_constr=0,
-                         xl=np.array([0.01, 0.01, 0.01, 0.01, 0.01]),
-                         xu=np.array([10.0, 10.0, 1.0, 10.0, 10.0]))
+                         xl=np.array([0.01, 0.01, 0.01]),
+                         xu=np.array([10.0, 10.0, 10.0]))
         self.sim = sim
         self.data = data
 
@@ -84,7 +75,7 @@ def optimize_parameters_nsga2(sim, data):
     
     algorithm = NSGA2(pop_size=200)
 
-    termination = get_termination("n_gen", 100)
+    termination = get_termination("n_gen", 50)
 
     res = pymoo_minimize(problem,
                        algorithm,
@@ -137,8 +128,12 @@ def plot_nsga2_analysis(result_nsga, problem, history=None, param_names=None, re
     # 3. Boxplot of parameters of non-dominated solutions
     if hasattr(result_nsga, 'X'):
         X = np.array(result_nsga.X)
+        # If X is 1D (only one solution), reshape to (1, n_params)
+        if X.ndim == 1:
+            X = X.reshape(1, -1)
         fig, ax = plt.subplots()
-        ax.boxplot(X, vert=True, patch_artist=True)
+        # Plot one box per parameter (columns)
+        ax.boxplot(X.T, vert=True, patch_artist=True)
         if param_names is not None:
             ax.set_xticklabels(param_names, rotation=30)
         else:
@@ -164,30 +159,29 @@ def plot_nsga2_analysis(result_nsga, problem, history=None, param_names=None, re
 if __name__ == "__main__":
 
     experiments = [
-        ("experiments/ExpX_senoide_id1.csv", "Sine id 1"),
-        ("experiments/ExpX_senoide_id2.csv", "Sine id 2"),
-        ("experiments/ExpX_senoide_id3.csv", "Sine id 3"),
-        ("experiments/ExpTodos_manual_x.csv", "Manual Input")
+        ("experiments/ExpYaw_senoide_id1.csv", "Sine id 1"),
+        ("experiments/ExpYaw_senoide_id2.csv", "Sine id 2"),
+        ("experiments/ExpYaw_senoide_id3.csv", "Sine id 3"),
     ]
-    file_path = "experiments/ExpX_senoide_id1.csv" 
-    results_path = "results/ExpX"
+    file_path = "experiments/ExpYaw_senoide_id1.csv"
+    results_path = "results/ExpYaw"
     os.makedirs(results_path, exist_ok=True)
     data = read_csv_and_adjust_time(file_path)
     # Normalize the initial position once
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
+    data['filtered_pose/yaw'] = data['filtered_pose/yaw'] - data['filtered_pose/yaw'].iloc[0]
     print(data)
 
     sim = simulator.Simulator()
     sim.initialize()
-    sim.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+    sim.run_input_vector_based([], [], [], uyaw=data['u_control/uyaw'].tolist())
     output = sim.get_rtY_vector()
     simdata = {}
-    simdata['dx_mps'] = [output_item.dx_mps for output_item in output]
-    simdata['x_m'] = [output_item.x_m for output_item in output]
-    simdata['pitch'] = [output_item.pitch_rad for output_item in output]
+    simdata['dyaw_radps'] = [output_item.dyaw_radps for output_item in output]
+    simdata['yaw_rad'] = [output_item.yaw_rad for output_item in output]
 
-    print("Pre-optimization MSE velocity:", mean_squared_error(data['filtered_pose/vxb'], simdata['dx_mps']))
-    print("Pre-optimization MSE pitch:", mean_squared_error(data['filtered_pose/pitch'], simdata['pitch']))
+
+    print("Pre-optimization MSE velocity:", mean_squared_error(data['filtered_pose/r'], simdata['dyaw_radps']))
+
 
     # Parameter optimization with NSGA-II
     result_nsga, problem = optimize_parameters_nsga2(sim, data)
@@ -197,8 +191,8 @@ if __name__ == "__main__":
     print("Objectives (F):", result_nsga.F)
 
     # Choose the best compromise solution (smallest Euclidean distance from the origin)
-    best_index = np.argmin(np.linalg.norm(result_nsga.F, axis=1))
-    best_params = result_nsga.X[best_index]
+    best_index = np.argmin(result_nsga.F)
+    best_params = result_nsga.X
     best_objectives = result_nsga.F[best_index]
 
     print("\nBest Selected Parameters:", best_params)
@@ -206,58 +200,49 @@ if __name__ == "__main__":
 
     sim_optimized = simulator.Simulator()
     params = sim_optimized.get_params()
-    params.pitch_K = best_params[0]
-    params.pitch_omega = best_params[1]
-    params.pitch_zeta = best_params[2]
-    params.pitch_max = best_params[3]
-    params.Cx = best_params[4]
+    params.yawp_K = best_params[0]
+    params.yawp_max = best_params[1]
+    params.yawp_tal = best_params[2]
     sim_optimized.set_params(params)
     sim_optimized.initialize()
-    sim_optimized.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+    sim_optimized.run_input_vector_based([], [], [], uyaw=data['u_control/uyaw'].tolist())
     output_oti = sim_optimized.get_rtY_vector()
     simOptimized = {}
-    simOptimized['dx_mps'] = [output_item.dx_mps for output_item in output_oti]
-    simOptimized['x_m'] = [output_item.x_m for output_item in output_oti]
-    simOptimized['pitch'] = [output_item.pitch_rad for output_item in output_oti]
+    simOptimized['dyaw_radps'] = [output_item.dyaw_radps for output_item in output_oti]
+    simOptimized['yaw_rad'] = [output_item.yaw_rad for output_item in output_oti]
 
 
-    # Creating subplots for pitch, dx_mps, and x_m
-    fig, axs = plt.subplots(4, 1, figsize=(10, 8))
 
-    # Plot for u_theta
-    axs[0].plot(data['time'], data['u_control/ux'], label='Sine id 1')
-    axs[0].set_title('u_theta')
+    # Creating subplots for roll, dy_mps, and y_m
+    fig, axs = plt.subplots(3, 1, figsize=(10, 8))
+
+    # Plot for u_yaw
+    axs[0].plot(data['time'], data['u_control/uyaw'], label='Sine id 1')
+    axs[0].set_title('u_yaw')
     axs[0].set_xlabel('Time (s)')
-    axs[0].set_ylabel('u_theta')
+    axs[0].set_ylabel('u_yaw')
     axs[0].legend(loc='upper right')
 
-    # Plot for pitch
-    axs[1].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
-    axs[1].plot(data['time'], simOptimized['pitch'], label='Optimized Pitch', linestyle='--')
-    axs[1].plot(data['time'], simdata['pitch'], label='Unoptimized Pitch', linestyle=':')
-    axs[1].set_title('Pitch')
+    # Plot for dyaw_radps
+    axs[1].plot(data['time'], data['filtered_pose/r'], label='Experimental dyaw_radps')
+    axs[1].plot(data['time'], simOptimized['dyaw_radps'], label='Optimized dyaw_radps', linestyle='--')
+    axs[1].plot(data['time'], simdata['dyaw_radps'], label='Unoptimized dyaw_radps', linestyle=':')
+    axs[1].set_title('dyaw_radps')
     axs[1].set_xlabel('Time (s)')
-    axs[1].set_ylabel('Pitch (rad)')
+    axs[1].set_ylabel('dyaw_radps (rad/s)')
     axs[1].legend(loc='upper right')
 
-    # Plot for dx_mps
-    axs[2].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
-    axs[2].plot(data['time'], simOptimized['dx_mps'], label='Optimized dx_mps', linestyle='--')
-    axs[2].plot(data['time'], simdata['dx_mps'], label='Unoptimized dx_mps', linestyle=':')
-    axs[2].set_title('dx_mps')
+    # Plot for yaw
+    axs[2].plot(data['time'], data['filtered_pose/yaw'], label='Experimental yaw')
+    axs[2].plot(data['time'], simOptimized['yaw_rad'], label='Optimized yaw', linestyle='--')
+    axs[2].plot(data['time'], simdata['yaw_rad'], label='Unoptimized yaw', linestyle=':')
+    axs[2].set_title('yaw')
     axs[2].set_xlabel('Time (s)')
-    axs[2].set_ylabel('dx_mps (m/s)')
+    axs[2].set_ylabel('yaw (rad)')
     axs[2].legend(loc='upper right')
 
-    # Plot for x_m
-    data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
-    axs[3].plot(data['time'], data['filtered_pose/xb'], label='Experimental x_m')
-    axs[3].plot(data['time'], simOptimized['x_m'], label='Optimized x_m', linestyle='--')
-    axs[3].plot(data['time'], simdata['x_m'], label='Unoptimized x_m', linestyle=':')
-    axs[3].set_title('x_m')
-    axs[3].set_xlabel('Time (s)')
-    axs[3].set_ylabel('x_m (m)')
-    axs[3].legend(loc='upper right')
+
+
 
 
 
@@ -270,73 +255,64 @@ if __name__ == "__main__":
     plt.close()
 
     # NSGA-II analysis plots
-    param_names = ["pitch_K", "pitch_omega", "pitch_zeta", "pitch_max", "Cx"]
-    plot_nsga2_analysis(result_nsga, problem, param_names=param_names,results_dir=results_path)
+    param_names = ["yawp_K", "yawp_max", "yawp_tal"]
+    # plot_nsga2_analysis(result_nsga, problem, param_names=param_names,results_dir=results_path)
 
     # Accumulate MSE results for all sines and manual
     mse_results_all = {}
 
     for file_path, label in experiments:
         data = read_csv_and_adjust_time(file_path)
-        data['filtered_pose/xb'] = data['filtered_pose/xb'] - data['filtered_pose/xb'].iloc[0]
+        data['filtered_pose/yaw'] = data['filtered_pose/yaw'] - data['filtered_pose/yaw'].iloc[0]
 
         sim_optimized = simulator.Simulator()
         params = sim_optimized.get_params()
-        params.pitch_K = best_params[0]
-        params.pitch_omega = best_params[1]
-        params.pitch_zeta = best_params[2]
-        params.pitch_max = best_params[3]
-        params.Cx = best_params[4]
+        params.yawp_K = best_params[0]
+        params.yawp_max = best_params[1]
+        params.yawp_tal = best_params[2]
         sim_optimized.set_params(params)
         sim_optimized.initialize()
-        sim_optimized.run_input_vector_based(upitch=data['u_control/ux'].tolist())
+        sim_optimized.run_input_vector_based([], [], [], uyaw=data['u_control/uyaw'].tolist())
         output_oti = sim_optimized.get_rtY_vector()
         simOptimized = {
-            'dx_mps': [output_item.dx_mps for output_item in output_oti],
-            'x_m': [output_item.x_m for output_item in output_oti],
-            'pitch': [output_item.pitch_rad for output_item in output_oti]
+            'dyaw_radps': [output_item.dyaw_radps for output_item in output_oti],
+            'yaw_rad': [output_item.yaw_rad for output_item in output_oti],
         }
 
         # Calculate MSE for this experiment
         mse_results_all[label] = {
-            "Pitch": mean_squared_error(data['filtered_pose/pitch'], simOptimized['pitch']),
-            "dx_mps": mean_squared_error(data['filtered_pose/vxb'], simOptimized['dx_mps']),
-            "x_m": mean_squared_error(data['filtered_pose/xb'], simOptimized['x_m'])
+            "dyaw_radps": mean_squared_error(data['filtered_pose/r'], simOptimized['dyaw_radps']),
+            "yaw_rad": mean_squared_error(data['filtered_pose/yaw'], simOptimized['yaw_rad']),
         }
 
-        # Create subplots for pitch, dx_mps, and x_m
-        fig, axs = plt.subplots(4, 1, figsize=(10, 8))
+        # Create subplots for roll, dy_mps, and y_m
+        fig, axs = plt.subplots(3, 1, figsize=(10, 8))
 
-        # Plot for u_theta
-        axs[0].plot(data['time'], data['u_control/ux'], label=label)
-        axs[0].set_title('u_theta')
+        # Plot for u_yaw
+        axs[0].plot(data['time'], data['u_control/uyaw'], label=label)
+        axs[0].set_title('u_z')
         axs[0].set_xlabel('Time (s)')
-        axs[0].set_ylabel('u_theta')
+        axs[0].set_ylabel('u_z')
         axs[0].legend(loc='upper right')
 
-        # Plot for pitch
-        axs[1].plot(data['time'], data['filtered_pose/pitch'], label='Experimental Pitch')
-        axs[1].plot(data['time'], simOptimized['pitch'], label='Optimized Pitch', linestyle='--')
-        axs[1].set_title('Pitch')
+        # Plot for dyaw_radps
+        axs[1].plot(data['time'], data['filtered_pose/r'], label='Experimental dyaw_radps')
+        axs[1].plot(data['time'], simOptimized['dyaw_radps'], label='Optimized dyaw_radps', linestyle='--')
+        axs[1].set_title('dyaw_radps')
         axs[1].set_xlabel('Time (s)')
-        axs[1].set_ylabel('Pitch (rad)')
+        axs[1].set_ylabel('dyaw (rad/s)')
         axs[1].legend(loc='upper right')
 
-        # Plot for dx_mps
-        axs[2].plot(data['time'], data['filtered_pose/vxb'], label='Experimental dx_mps')
-        axs[2].plot(data['time'], simOptimized['dx_mps'], label='Optimized dx_mps', linestyle='--')
-        axs[2].set_title('dx_mps')
+        # Plot for yaw
+        axs[2].plot(data['time'], data['filtered_pose/yaw'], label='Experimental yaw')
+        axs[2].plot(data['time'], simOptimized['yaw_rad'], label='Optimized yaw', linestyle='--')
+        axs[2].set_title('yaw')
         axs[2].set_xlabel('Time (s)')
-        axs[2].set_ylabel('dx_mps (m/s)')
+        axs[2].set_ylabel('yaw (rad)')
         axs[2].legend(loc='upper right')
 
-        # Plot for x_m
-        axs[3].plot(data['time'], data['filtered_pose/xb'], label='Experimental x_m')
-        axs[3].plot(data['time'], simOptimized['x_m'], label='Optimized x_m', linestyle='--')
-        axs[3].set_title('x_m')
-        axs[3].set_xlabel('Time (s)')
-        axs[3].set_ylabel('x_m (m)')
-        axs[3].legend(loc='upper right')
+
+
 
 
         # Add a general title for all subplots
@@ -361,9 +337,9 @@ if __name__ == "__main__":
 
     with open(output_csv_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["Experiment", "Pitch", "dx_mps", "x_m"])
+        writer.writerow(["Experiment", "dyaw_radps", "yaw_rad"])
 
         for experiment, mse_values in mse_results_all.items():
-            writer.writerow([experiment, mse_values["Pitch"], mse_values["dx_mps"], mse_values["x_m"]])
+            writer.writerow([experiment, mse_values["dyaw_radps"], mse_values["yaw_rad"]])
 
     print(f"MSE results saved at: {output_csv_path}")
