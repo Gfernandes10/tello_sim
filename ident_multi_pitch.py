@@ -82,19 +82,235 @@ class MultiObjectiveProblem(Problem):
 def optimize_parameters_nsga2(sim, data):
     problem = MultiObjectiveProblem(sim, data)
     
-    algorithm = NSGA2(pop_size=200)
+    algorithm = NSGA2(pop_size=300)
 
     termination = get_termination("n_gen", 100)
+
+    # Workaround: Save only objectives history manually
+    history_F = []
+    def callback(algorithm):
+        if hasattr(algorithm, 'pop'):
+            F = algorithm.pop.get('F')
+            if F is not None:
+                history_F.append(np.copy(F))
 
     res = pymoo_minimize(problem,
                        algorithm,
                        termination,
                        seed=1,
                        save_history=False,
-                       verbose=True)
+                       verbose=True,
+                       callback=callback)
 
+    res.history_F = history_F
     return res, problem
 def plot_nsga2_analysis(result_nsga, problem, history=None, param_names=None, results_dir="results"):
+    # --- Plot all Pareto fronts (only Pareto points) for all generations in a single plot ---
+    from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
+    if hasattr(result_nsga, 'history_F') and result_nsga.history_F is not None and len(result_nsga.history_F) > 0:
+        history_F = result_nsga.history_F
+        # Individual plots per generation (keep this if you want both)
+        pareto_dir = os.path.join(results_dir, "pareto_fronts_per_generation")
+        os.makedirs(pareto_dir, exist_ok=True)
+        for gen, Fgen in enumerate(history_F):
+            Fgen = np.atleast_2d(Fgen)
+            if Fgen.shape[1] < 2:
+                continue  # Only plot for multi-objective
+            nds = NonDominatedSorting()
+            fronts = nds.do(Fgen, only_non_dominated_front=True)
+            pareto_F = Fgen[fronts]
+            plt.figure(figsize=(6, 5))
+            plt.scatter(Fgen[:, 0], Fgen[:, 1], c='lightgray', label='Population')
+            plt.scatter(pareto_F[:, 0], pareto_F[:, 1], c='red', label='Pareto Front')
+            plt.xlabel('Objective 1')
+            plt.ylabel('Objective 2')
+            plt.title(f'Pareto Front - Generation {gen+1}')
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig(os.path.join(pareto_dir, f"pareto_front_gen_{gen+1}.png"))
+            plt.close()
+
+        # --- Generate GIF of Pareto front evolution ---
+        try:
+            import imageio
+            image_files = sorted([f for f in os.listdir(pareto_dir) if f.endswith('.png')],
+                                 key=lambda x: int(x.split('_')[-1].split('.')[0]))
+            images = []
+            for filename in image_files:
+                file_path = os.path.join(pareto_dir, filename)
+                images.append(imageio.imread(file_path))
+            gif_path = os.path.join(results_dir, "pareto_evolution.gif")
+            imageio.mimsave(gif_path, images, duration=0.3)
+            print(f"GIF saved at: {gif_path}")
+        except ImportError:
+            print("imageio is not installed. Install it with 'pip install imageio' to generate the GIF.")
+
+        # --- Generate GIF of Pareto front individuals only ---
+        pareto_only_dir = os.path.join(results_dir, "pareto_fronts_only_per_generation")
+        os.makedirs(pareto_only_dir, exist_ok=True)
+        pareto_only_pngs = []
+        for gen, Fgen in enumerate(history_F):
+            Fgen = np.atleast_2d(Fgen)
+            if Fgen.shape[1] < 2:
+                continue
+            nds = NonDominatedSorting()
+            fronts = nds.do(Fgen, only_non_dominated_front=True)
+            pareto_F = Fgen[fronts]
+            plt.figure(figsize=(6, 5))
+            plt.scatter(pareto_F[:, 0], pareto_F[:, 1], c='red', label='Pareto Front')
+            plt.xlabel('Objective 1')
+            plt.ylabel('Objective 2')
+            plt.title(f'Pareto Front Only - Generation {gen+1}')
+            plt.legend()
+            plt.tight_layout()
+            png_path = os.path.join(pareto_only_dir, f"pareto_only_gen_{gen+1}.png")
+            plt.savefig(png_path)
+            plt.close()
+            pareto_only_pngs.append(png_path)
+        # Create GIF from Pareto-only PNGs
+        try:
+            import imageio
+            images = [imageio.imread(png) for png in pareto_only_pngs]
+            gif_path = os.path.join(results_dir, "pareto_only_evolution.gif")
+            imageio.mimsave(gif_path, images, duration=0.3)
+            print(f"Pareto-only GIF saved at: {gif_path}")
+        except ImportError:
+            print("imageio is not installed. Install it with 'pip install imageio' to generate the Pareto-only GIF.")
+    # --- Plot all Pareto fronts (only Pareto points) for all generations in a single plot ---
+    from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
+    if hasattr(result_nsga, 'history_F') and result_nsga.history_F is not None and len(result_nsga.history_F) > 0:
+        history_F = result_nsga.history_F
+        # Individual plots per generation (keep this if you want both)
+        pareto_dir = os.path.join(results_dir, "pareto_fronts_per_generation")
+        os.makedirs(pareto_dir, exist_ok=True)
+        for gen, Fgen in enumerate(history_F):
+            Fgen = np.atleast_2d(Fgen)
+            if Fgen.shape[1] < 2:
+                continue  # Only plot for multi-objective
+            nds = NonDominatedSorting()
+            fronts = nds.do(Fgen, only_non_dominated_front=True)
+            pareto_F = Fgen[fronts]
+            plt.figure(figsize=(6, 5))
+            plt.scatter(Fgen[:, 0], Fgen[:, 1], c='lightgray', label='Population')
+            plt.scatter(pareto_F[:, 0], pareto_F[:, 1], c='red', label='Pareto Front')
+            plt.xlabel('Objective 1')
+            plt.ylabel('Objective 2')
+            plt.title(f'Pareto Front - Generation {gen+1}')
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig(os.path.join(pareto_dir, f"pareto_front_gen_{gen+1}.png"))
+            plt.close()
+
+        # Combined plot: all Pareto fronts in one figure with colorbar and normalized axes
+        import matplotlib as mpl
+        fig, ax = plt.subplots(figsize=(8, 6))
+        cmap = plt.get_cmap('viridis')
+        norm = mpl.colors.Normalize(vmin=0, vmax=len(history_F)-1)
+        all_pareto = []
+        for gen, Fgen in enumerate(history_F):
+            Fgen = np.atleast_2d(Fgen)
+            if Fgen.shape[1] < 2:
+                continue
+            nds = NonDominatedSorting()
+            fronts = nds.do(Fgen, only_non_dominated_front=True)
+            pareto_F = Fgen[fronts]
+            all_pareto.append(pareto_F)
+        # Stack all Pareto points to normalize
+        if all_pareto:
+            all_pareto_concat = np.vstack(all_pareto)
+            min_vals = np.min(all_pareto_concat, axis=0)
+            max_vals = np.max(all_pareto_concat, axis=0)
+            # Avoid division by zero
+            range_vals = np.where(max_vals - min_vals == 0, 1, max_vals - min_vals)
+        else:
+            min_vals = np.zeros(2)
+            range_vals = np.ones(2)
+        for gen, pareto_F in enumerate(all_pareto):
+            normed = (pareto_F - min_vals) / range_vals
+            ax.scatter(normed[:, 0], normed[:, 1], color=cmap(norm(gen)), s=20, alpha=0.7)
+        sm = mpl.cm.ScalarMappable(cmap=cmap, norm=norm)
+        sm.set_array([])
+        cbar = fig.colorbar(sm, ax=ax, ticks=[0, len(history_F)-1])
+        cbar.ax.set_yticklabels(['Gen 1', f'Gen {len(history_F)}'])
+        ax.set_xlabel('Objective 1 (normalized)')
+        ax.set_ylabel('Objective 2 (normalized)')
+        ax.set_title('Pareto Fronts per Generation (Normalized)')
+        ax.set_xlim(0, 0.05)
+        ax.set_ylim(0, 0.05)
+        fig.tight_layout()
+        fig.savefig(os.path.join(results_dir, "all_pareto_fronts_generations.png"))
+        plt.close(fig)
+    # --- Save and plot objectives history (if available) ---
+    if hasattr(result_nsga, 'history_F') and result_nsga.history_F is not None and len(result_nsga.history_F) > 0:
+        history_F = result_nsga.history_F
+        # Save objectives history as CSV
+        history_csv_path = os.path.join(results_dir, "objectives_history.csv")
+        with open(history_csv_path, "w", newline="") as f:
+            writer = csv.writer(f)
+            n_obj = result_nsga.F.shape[1] if len(result_nsga.F.shape) > 1 else 1
+            writer.writerow(["Generation"] + [f"Objective_{i+1}" for i in range(n_obj)])
+            for gen, Fgen in enumerate(history_F):
+                Fgen = np.atleast_2d(Fgen)
+                for row in Fgen:
+                    writer.writerow([gen+1] + list(row))
+
+        # Plot convergence of objectives over generations (best value per generation only)
+        best_per_gen = []
+        for Fgen in history_F:
+            Fgen = np.atleast_2d(Fgen)
+            best_per_gen.append(np.min(Fgen, axis=0))
+        best_per_gen = np.array(best_per_gen)
+        plt.figure(figsize=(8, 5))
+        generations = np.arange(1, best_per_gen.shape[0]+1)
+        for i in range(best_per_gen.shape[1]):
+            plt.plot(generations, best_per_gen[:, i], label=f'Objective {i+1}')
+        plt.xlabel('Generation')
+        plt.ylabel('Best Objective Value')
+        plt.title('Convergence of Best Objective Value per Generation')
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(os.path.join(results_dir, "objectives_convergence_history.png"))
+        plt.close()
+    # --- Diversity Metrics: Spread (Δ) and Spacing ---
+    def calc_spread(F):
+        # Only for 2 or more objectives and at least 2 points
+        if F.shape[0] < 2:
+            return np.nan
+        F_sorted = F[np.argsort(F[:, 0])]
+        d_f = np.linalg.norm(F_sorted[0] - F_sorted[-1])
+        d = np.linalg.norm(np.diff(F_sorted, axis=0), axis=1)
+        d_bar = np.mean(d)
+        delta = (d_f + np.sum(np.abs(d - d_bar))) / (d_f + (F.shape[0] - 1) * d_bar)
+        return delta
+
+    def calc_spacing(F):
+        # Only for 2 or more points
+        if F.shape[0] < 2:
+            return np.nan
+        d = np.linalg.norm(np.diff(np.sort(F, axis=0), axis=0), axis=1)
+        d_bar = np.mean(d)
+        spacing = np.sqrt(np.sum((d - d_bar) ** 2) / (len(d)))
+        return spacing
+
+    # Calculate and print diversity metrics if multi-objective
+    F_metrics = np.array(result_nsga.F)
+    if F_metrics.ndim == 1:
+        F_metrics = F_metrics.reshape(-1, 1)
+    diversity_txt_path = os.path.join(results_dir, "diversity_metrics.txt")
+    with open(diversity_txt_path, "w", encoding="utf-8") as f:
+        if F_metrics.shape[1] > 1 and F_metrics.shape[0] > 1:
+            spread = calc_spread(F_metrics)
+            spacing = calc_spacing(F_metrics)
+            msg1 = f"Spread (Δ) of Pareto front: {spread:.4f}\n"
+            msg2 = f"Spacing of Pareto front: {spacing:.4f}\n"
+            print(msg1.strip())
+            print(msg2.strip())
+            f.write(msg1)
+            f.write(msg2)
+        else:
+            msg = "Spread (Δ) and Spacing metrics require at least 2 objectives and 2 solutions.\n"
+            print(msg.strip())
+            f.write(msg)
     """
     Generates and saves NSGA-II analysis plots in the results folder.
     - Pareto Front
@@ -191,10 +407,12 @@ if __name__ == "__main__":
 
     # Parameter optimization with NSGA-II
     result_nsga, problem = optimize_parameters_nsga2(sim, data)
-    
+
     print("Multi-objective Optimization Results (Pareto Front):")
     print("Parameters (X):", result_nsga.X)
     print("Objectives (F):", result_nsga.F)
+
+    # ...existing code...
 
     # Choose the best compromise solution (smallest Euclidean distance from the origin)
     best_index = np.argmin(np.linalg.norm(result_nsga.F, axis=1))
