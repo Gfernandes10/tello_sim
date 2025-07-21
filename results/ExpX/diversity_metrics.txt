@@ -1,0 +1,2 @@
+Spread (Δ) of Pareto front: 1.1795
+Spacing of Pareto front: 0.0016
